@@ -25,9 +25,33 @@ const Users = () => {
     );
   };
 
+  const renderUserQuality = (quality) => {
+    const classes = `badge bg-${quality.color} m-1`;
+    return (
+      <span key={quality._id} className={classes}>
+        {quality.name}
+      </span>
+    );
+  };
+
+  const renderUserRow = (user) => {
+    return (
+      <tr key={user._id}>
+        <td>{user.name}</td>
+        <td>{user.qualities.map((q) => renderUserQuality(q))}</td>
+        <td>{user.profession.name}</td>
+        <td>{user.completedMeetings}</td>
+        <td>{`${user.rate}/5`}</td>
+        <td>
+          <button className="btn btn-sm btn-danger">delete</button>
+        </td>
+      </tr>
+    );
+  };
+
   const renderUsersTable = () => {
     return (
-      <table className="table">
+      <table className="table table-hover">
         <thead>
           <tr>
             <th>Имя</th>
@@ -37,6 +61,7 @@ const Users = () => {
             <th>Оценка</th>
           </tr>
         </thead>
+        <tbody>{users.map((user) => renderUserRow(user))}</tbody>
       </table>
     );
   };
