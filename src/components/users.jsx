@@ -34,6 +34,10 @@ const Users = () => {
     );
   };
 
+  const handleUserRemove = (userId) => {
+    setUsers((prevState) => prevState.filter((user) => user._id !== userId));
+  };
+
   const renderUserRow = (user) => {
     return (
       <tr key={user._id}>
@@ -43,7 +47,12 @@ const Users = () => {
         <td>{user.completedMeetings}</td>
         <td>{`${user.rate}/5`}</td>
         <td>
-          <button className="btn btn-sm btn-danger">delete</button>
+          <button
+            className="btn btn-sm btn-danger"
+            onClick={() => handleUserRemove(user._id)}
+          >
+            delete
+          </button>
         </td>
       </tr>
     );
@@ -51,18 +60,20 @@ const Users = () => {
 
   const renderUsersTable = () => {
     return (
-      <table className="table table-hover">
-        <thead>
-          <tr>
-            <th>Имя</th>
-            <th>Качества</th>
-            <th>Профессия</th>
-            <th>Встретился, раз</th>
-            <th>Оценка</th>
-          </tr>
-        </thead>
-        <tbody>{users.map((user) => renderUserRow(user))}</tbody>
-      </table>
+      users.length > 0 && (
+        <table className="table table-hover">
+          <thead>
+            <tr>
+              <th>Имя</th>
+              <th>Качества</th>
+              <th>Профессия</th>
+              <th>Встретился, раз</th>
+              <th>Оценка</th>
+            </tr>
+          </thead>
+          <tbody>{users.map((user) => renderUserRow(user))}</tbody>
+        </table>
+      )
     );
   };
   return (
