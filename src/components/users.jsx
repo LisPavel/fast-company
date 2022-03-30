@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import API from "../api";
+import User from "./user";
 
 const Users = () => {
   const [users, setUsers] = useState(API.users.fetchAll());
@@ -25,37 +26,8 @@ const Users = () => {
     );
   };
 
-  const renderUserQuality = (quality) => {
-    const classes = `badge bg-${quality.color} m-1`;
-    return (
-      <span key={quality._id} className={classes}>
-        {quality.name}
-      </span>
-    );
-  };
-
   const handleUserRemove = (userId) => {
     setUsers((prevState) => prevState.filter((user) => user._id !== userId));
-  };
-
-  const renderUserRow = (user) => {
-    return (
-      <tr key={user._id}>
-        <td>{user.name}</td>
-        <td>{user.qualities.map((q) => renderUserQuality(q))}</td>
-        <td>{user.profession.name}</td>
-        <td>{user.completedMeetings}</td>
-        <td>{`${user.rate}/5`}</td>
-        <td>
-          <button
-            className="btn btn-sm btn-danger"
-            onClick={() => handleUserRemove(user._id)}
-          >
-            delete
-          </button>
-        </td>
-      </tr>
-    );
   };
 
   const renderUsersTable = () => {
@@ -71,7 +43,11 @@ const Users = () => {
               <th>Оценка</th>
             </tr>
           </thead>
-          <tbody>{users.map((user) => renderUserRow(user))}</tbody>
+          <tbody>
+            {users.map((user) => (
+              <User key={user._id} {...user} onUserRemove={handleUserRemove} />
+            ))}
+          </tbody>
         </table>
       )
     );
