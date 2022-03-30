@@ -1,5 +1,5 @@
 import React from "react";
-import Quality from "./quality";
+import Qualitie from "./qualitie";
 
 const User = (props) => {
   const { onUserRemove } = props;
@@ -10,7 +10,7 @@ const User = (props) => {
       <td>{props.name}</td>
       <td>
         {props.qualities.map((q) => (
-          <Quality key={q._id} {...q} />
+          <Qualitie key={q._id} {...q} />
         ))}
       </td>
       <td>{props.profession.name}</td>
