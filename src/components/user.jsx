@@ -1,22 +1,18 @@
 import React from "react";
+import Quality from "./quality";
 
 const User = (props) => {
   const { onUserRemove } = props;
   const handleUserRemove = () => onUserRemove?.(props._id);
 
-  const renderUserQuality = (quality) => {
-    const classes = `badge bg-${quality.color} m-1`;
-    return (
-      <span key={quality._id} className={classes}>
-        {quality.name}
-      </span>
-    );
-  };
-
   return (
     <tr>
       <td>{props.name}</td>
-      <td>{props.qualities.map((q) => renderUserQuality(q))}</td>
+      <td>
+        {props.qualities.map((q) => (
+          <Quality key={q._id} {...q} />
+        ))}
+      </td>
       <td>{props.profession.name}</td>
       <td>{props.completedMeetings}</td>
       <td>{`${props.rate}/5`}</td>
