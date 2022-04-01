@@ -1,9 +1,13 @@
 import React from "react";
 import Qualitie from "./qualitie";
+import Bookmark from "./bookmark";
 
 const User = (props) => {
-  const { onUserRemove } = props;
+  const { onUserRemove, onBookmarkToggle } = props;
+
   const handleUserRemove = () => onUserRemove?.(props._id);
+
+  const handleBookmarkClick = () => onBookmarkToggle(props._id);
 
   return (
     <tr>
@@ -17,7 +21,17 @@ const User = (props) => {
       <td>{props.completedMeetings}</td>
       <td>{`${props.rate}/5`}</td>
       <td>
-        <button className="btn btn-sm btn-danger" onClick={handleUserRemove}>
+        <Bookmark
+          bookmarked={props.bookmark}
+          onBookmarkClick={handleBookmarkClick}
+        />
+      </td>
+      <td>
+        <button
+          className="btn btn-sm btn-danger"
+          onClick={handleUserRemove}
+          // disabled={props.bookmark}
+        >
           delete
         </button>
       </td>
