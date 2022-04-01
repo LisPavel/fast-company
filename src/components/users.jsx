@@ -1,23 +1,10 @@
-import React, { useState } from "react";
-import API from "../api";
+import React /* , { useState } */ from "react";
+
 import User from "./user";
 import SearchStatus from "./searchStatus";
 
-const Users = () => {
-  const [users, setUsers] = useState(API.users.fetchAll());
-
-  const handleUserRemove = (userId) => {
-    setUsers((prevState) => prevState.filter((user) => user._id !== userId));
-  };
-
-  const handleUserBookmarkToggle = (userId) => {
-    setUsers((prevState) =>
-      prevState.map((user) => ({
-        ...user,
-        bookmark: userId === user._id ? !user.bookmark : user.bookmark,
-      }))
-    );
-  };
+const Users = (props) => {
+  const { users, onUserRemove, onUserBookmarkToggle } = props;
 
   const renderUsersTable = () => {
     return (
@@ -38,8 +25,8 @@ const Users = () => {
               <User
                 key={user._id}
                 {...user}
-                onUserRemove={handleUserRemove}
-                onBookmarkToggle={handleUserBookmarkToggle}
+                onUserRemove={onUserRemove}
+                onBookmarkToggle={onUserBookmarkToggle}
               />
             ))}
           </tbody>
