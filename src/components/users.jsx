@@ -10,6 +10,15 @@ const Users = () => {
     setUsers((prevState) => prevState.filter((user) => user._id !== userId));
   };
 
+  const handleUserBookmarkToggle = (userId) => {
+    setUsers((prevState) =>
+      prevState.map((user) => ({
+        ...user,
+        bookmark: userId === user._id ? !user.bookmark : user.bookmark,
+      }))
+    );
+  };
+
   const renderUsersTable = () => {
     return (
       users.length > 0 && (
@@ -21,11 +30,17 @@ const Users = () => {
               <th>Профессия</th>
               <th>Встретился, раз</th>
               <th>Оценка</th>
+              <th>Избранное</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
-              <User key={user._id} {...user} onUserRemove={handleUserRemove} />
+              <User
+                key={user._id}
+                {...user}
+                onUserRemove={handleUserRemove}
+                onBookmarkToggle={handleUserBookmarkToggle}
+              />
             ))}
           </tbody>
         </table>
