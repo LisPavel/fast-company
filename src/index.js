@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from "./app";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import reportWebVitals from "./reportWebVitals";
 
