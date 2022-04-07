@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const SearchStatus = (props) => {
   const { usersAmount = 0 } = props;
@@ -20,6 +21,10 @@ const SearchStatus = (props) => {
       <span className={classes}>{getTitleText()}</span>
     </h2>
   );
+};
+
+SearchStatus.propTypes = {
+  usersAmount: PropTypes.number,
 };
 
 export default SearchStatus;

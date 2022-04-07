@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 import User from "./user";
 import SearchStatus from "./searchStatus";
@@ -59,6 +60,12 @@ const Users = (props) => {
       />
     </>
   );
+};
+
+Users.propTypes = {
+  users: PropTypes.array.isRequired,
+  onUserRemove: PropTypes.func.isRequired,
+  onUserBookmarkToggle: PropTypes.func.isRequired,
 };
 
 export default Users;
