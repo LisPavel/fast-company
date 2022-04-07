@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 
 import User from "./user";
 import SearchStatus from "./searchStatus";
+import Pagination from "./pagination";
+
+import { paginate } from "../utils/paginate";
 
 const Users = (props) => {
   const { users, onUserRemove, onUserBookmarkToggle } = props;
+  const usersCount = users.length;
+  const pageSize = 4;
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (pageIndex) => {
+    setCurrentPage(pageIndex);
+  };
+
+  const usersCrop = paginate(users, currentPage, pageSize);
 
   const renderUsersTable = () => {
     return (
-      users.length > 0 && (
+      usersCount > 0 && (
         <table className="table table-hover">
           <thead>
             <tr>
@@ -21,7 +34,7 @@ const Users = (props) => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {usersCrop.map((user) => (
               <User
                 key={user._id}
                 {...user}
@@ -38,6 +51,12 @@ const Users = (props) => {
     <>
       <SearchStatus usersAmount={users.length} />
       {renderUsersTable()}
+      <Pagination
+        itemsCount={usersCount}
+        pageSize={pageSize}
+        onPageChange={handlePageChange}
+        currentPage={currentPage}
+      />
     </>
   );
 };
