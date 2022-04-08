@@ -1,6 +1,7 @@
 import React from "react";
 import Qualitie from "./qualitie";
 import Bookmark from "./bookmark";
+import PropTypes from "prop-types";
 
 const User = (props) => {
   const { onUserRemove, onBookmarkToggle } = props;
@@ -37,6 +38,20 @@ const User = (props) => {
       </td>
     </tr>
   );
+};
+
+User.propTypes = {
+  onUserRemove: PropTypes.func.isRequired,
+  onBookmarkToggle: PropTypes.func.isRequired,
+  _id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  qualities: PropTypes.arrayOf(
+    PropTypes.shape({ _id: PropTypes.string.isRequired })
+  ).isRequired,
+  profession: PropTypes.shape({ name: PropTypes.string.isRequired }).isRequired,
+  completedMeetings: PropTypes.number.isRequired,
+  rate: PropTypes.number.isRequired,
+  bookmark: PropTypes.bool.isRequired,
 };
 
 export default User;
