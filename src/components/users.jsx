@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+
+import api from "../api";
 
 import User from "./user";
 import SearchStatus from "./searchStatus";
 import Pagination from "./pagination";
+import GroupList from "./groupList";
 
 import { paginate } from "../utils/paginate";
 
@@ -11,6 +14,17 @@ const Users = (props) => {
   const { users, onUserRemove, onUserBookmarkToggle } = props;
   const usersCount = users.length;
   const pageSize = 4;
+
+  const [professions, setProfessions] = useState();
+
+  useEffect(() => {
+    api.professions.fetchAll().then((data) => setProfessions(data));
+    return () => console.log("unmount");
+  }, []);
+
+  const handleProfessionSelect = (params) => {
+    console.log(params);
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -50,6 +64,9 @@ const Users = (props) => {
   };
   return (
     <>
+      {professions && (
+        <GroupList items={professions} onItemSelect={handleProfessionSelect} />
+      )}
       <SearchStatus usersAmount={users.length} />
       {renderUsersTable()}
       <Pagination
