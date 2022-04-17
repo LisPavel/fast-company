@@ -12,27 +12,31 @@ import { paginate } from "../utils/paginate";
 
 const Users = (props) => {
   const { users, onUserRemove, onUserBookmarkToggle } = props;
-  const usersCount = users.length;
   const pageSize = 4;
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
+  const [selectedProf, setSelectedProf] = useState();
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
     return () => console.log("unmount");
   }, []);
 
-  const handleProfessionSelect = (params) => {
-    console.log(params);
+  const handleProfessionSelect = (item) => {
+    setSelectedProf(item);
   };
-
-  const [currentPage, setCurrentPage] = useState(1);
 
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
 
-  const usersCrop = paginate(users, currentPage, pageSize);
+  const filteredUsers = selectedProf
+    ? users.filter((user) => user.profession === selectedProf)
+    : users;
+  const usersCrop = paginate(filteredUsers, currentPage, pageSize);
+
+  const usersCount = filteredUsers.length;
 
   const renderUsersTable = () => {
     return (
@@ -65,7 +69,11 @@ const Users = (props) => {
   return (
     <>
       {professions && (
-        <GroupList items={professions} onItemSelect={handleProfessionSelect} />
+        <GroupList
+          items={professions}
+          onItemSelect={handleProfessionSelect}
+          selectedItem={selectedProf}
+        />
       )}
       <SearchStatus usersAmount={users.length} />
       {renderUsersTable()}
