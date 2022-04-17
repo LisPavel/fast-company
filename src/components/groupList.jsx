@@ -1,12 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const GroupList = ({
-  items,
-  onItemSelect,
-  valueProperty = "_id",
-  contentProperty = "name",
-}) => {
+const GroupList = ({ items, onItemSelect, valueProperty, contentProperty }) => {
   return (
     <ul className="list-group">
       {Object.values(items).map((item) => (
@@ -16,6 +11,11 @@ const GroupList = ({
       ))}
     </ul>
   );
+};
+
+GroupList.defaultProps = {
+  valueProperty: "_id",
+  contentProperty: "name",
 };
 
 GroupList.propTypes = {
