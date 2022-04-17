@@ -31,6 +31,10 @@ const Users = (props) => {
     setCurrentPage(pageIndex);
   };
 
+  const clearFilter = () => {
+    setSelectedProf();
+  };
+
   const filteredUsers = selectedProf
     ? users.filter((user) => user.profession === selectedProf)
     : users;
@@ -69,11 +73,16 @@ const Users = (props) => {
   return (
     <>
       {professions && (
-        <GroupList
-          items={professions}
-          onItemSelect={handleProfessionSelect}
-          selectedItem={selectedProf}
-        />
+        <>
+          <GroupList
+            items={professions}
+            onItemSelect={handleProfessionSelect}
+            selectedItem={selectedProf}
+          />
+          <button className="btn btn-secondary mt-2" onClick={clearFilter}>
+            Очистить
+          </button>
+        </>
       )}
       <SearchStatus usersAmount={users.length} />
       {renderUsersTable()}
