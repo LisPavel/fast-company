@@ -23,6 +23,8 @@ const Users = (props) => {
     return () => console.log("unmount");
   }, []);
 
+  useEffect(() => setCurrentPage(1), [selectedProf]);
+
   const handleProfessionSelect = (item) => {
     setSelectedProf(item);
   };
@@ -71,9 +73,9 @@ const Users = (props) => {
     );
   };
   return (
-    <>
+    <div className="d-flex">
       {professions && (
-        <>
+        <div className="d-flex flex-column flex-shrink-0 p-3">
           <GroupList
             items={professions}
             onItemSelect={handleProfessionSelect}
@@ -82,17 +84,21 @@ const Users = (props) => {
           <button className="btn btn-secondary mt-2" onClick={clearFilter}>
             Очистить
           </button>
-        </>
+        </div>
       )}
-      <SearchStatus usersAmount={users.length} />
-      {renderUsersTable()}
-      <Pagination
-        itemsCount={usersCount}
-        pageSize={pageSize}
-        onPageChange={handlePageChange}
-        currentPage={currentPage}
-      />
-    </>
+      <div className="d-flex flex-column">
+        <SearchStatus usersAmount={usersCount} />
+        {renderUsersTable()}
+        <div className="d-flex justify-content-center">
+          <Pagination
+            itemsCount={usersCount}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            currentPage={currentPage}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 
