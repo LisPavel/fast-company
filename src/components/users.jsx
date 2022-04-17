@@ -38,7 +38,7 @@ const Users = (props) => {
   };
 
   const filteredUsers = selectedProf
-    ? users.filter((user) => user.profession === selectedProf)
+    ? users.filter((user) => user.profession._id === selectedProf?._id)
     : users;
   const usersCrop = paginate(filteredUsers, currentPage, pageSize);
 
