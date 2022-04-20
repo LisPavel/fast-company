@@ -3,15 +3,15 @@ import PropTypes from "prop-types";
 
 import api from "../api";
 
-import User from "./user";
 import SearchStatus from "./searchStatus";
 import Pagination from "./pagination";
 import GroupList from "./groupList";
+import UsersTable from "./usersTable";
 
 import { paginate } from "../utils/paginate";
 
 const Users = (props) => {
-  const { users, onUserRemove, onUserBookmarkToggle } = props;
+  const { users, ...rest } = props;
   const pageSize = 4;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,34 +44,9 @@ const Users = (props) => {
 
   const usersCount = filteredUsers.length;
 
-  const renderUsersTable = () => {
-    return (
-      usersCount > 0 && (
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th>Имя</th>
-              <th>Качества</th>
-              <th>Профессия</th>
-              <th>Встретился, раз</th>
-              <th>Оценка</th>
-              <th>Избранное</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usersCrop.map((user) => (
-              <User
-                key={user._id}
-                {...user}
-                onUserRemove={onUserRemove}
-                onBookmarkToggle={onUserBookmarkToggle}
-              />
-            ))}
-          </tbody>
-        </table>
-      )
-    );
-  };
+  const renderUsersTable = () =>
+    usersCount > 0 && <UsersTable users={usersCrop} {...rest} />;
+
   return (
     <div className="d-flex">
       {professions && (
