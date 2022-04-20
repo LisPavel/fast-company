@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 
 import api from "../api";
 
@@ -12,11 +13,12 @@ import { paginate } from "../utils/paginate";
 
 const Users = (props) => {
   const { users, ...rest } = props;
-  const pageSize = 4;
+  const pageSize = 8;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
+  const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
@@ -33,6 +35,16 @@ const Users = (props) => {
     setCurrentPage(pageIndex);
   };
 
+  const handleSort = (item) => {
+    if (item === sortBy.iter) {
+      return setSortBy((prevState) => ({
+        ...prevState,
+        order: prevState.order === "asc" ? "desc" : "asc",
+      }));
+    }
+    setSortBy({ iter: item, order: "asc" });
+  };
+
   const clearFilter = () => {
     setSelectedProf();
   };
@@ -40,12 +52,15 @@ const Users = (props) => {
   const filteredUsers = selectedProf
     ? users.filter((user) => user.profession._id === selectedProf?._id)
     : users;
-  const usersCrop = paginate(filteredUsers, currentPage, pageSize);
+  const sortedUsers = _.orderBy(filteredUsers, [sortBy.iter], [sortBy.order]);
+  const usersCrop = paginate(sortedUsers, currentPage, pageSize);
 
   const usersCount = filteredUsers.length;
 
   const renderUsersTable = () =>
-    usersCount > 0 && <UsersTable users={usersCrop} {...rest} />;
+    usersCount > 0 && (
+      <UsersTable users={usersCrop} onSort={handleSort} {...rest} />
+    );
 
   return (
     <div className="d-flex">
@@ -79,8 +94,6 @@ const Users = (props) => {
 
 Users.propTypes = {
   users: PropTypes.array.isRequired,
-  onUserRemove: PropTypes.func.isRequired,
-  onUserBookmarkToggle: PropTypes.func.isRequired,
 };
 
 export default Users;

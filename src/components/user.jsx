@@ -4,11 +4,11 @@ import Bookmark from "./bookmark";
 import PropTypes from "prop-types";
 
 const User = (props) => {
-  const { onUserRemove, onBookmarkToggle } = props;
+  const { onUserRemove, onUserBookmarkToggle } = props;
 
   const handleUserRemove = () => onUserRemove?.(props._id);
 
-  const handleBookmarkClick = () => onBookmarkToggle(props._id);
+  const handleBookmarkClick = () => onUserBookmarkToggle(props._id);
 
   return (
     <tr>
@@ -42,7 +42,7 @@ const User = (props) => {
 
 User.propTypes = {
   onUserRemove: PropTypes.func.isRequired,
-  onBookmarkToggle: PropTypes.func.isRequired,
+  onUserBookmarkToggle: PropTypes.func.isRequired,
   _id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   qualities: PropTypes.arrayOf(
