@@ -36,13 +36,7 @@ const Users = (props) => {
   };
 
   const handleSort = (item) => {
-    if (item === sortBy.iter) {
-      return setSortBy((prevState) => ({
-        ...prevState,
-        order: prevState.order === "asc" ? "desc" : "asc",
-      }));
-    }
-    setSortBy({ iter: item, order: "asc" });
+    setSortBy(item);
   };
 
   const clearFilter = () => {
@@ -59,7 +53,12 @@ const Users = (props) => {
 
   const renderUsersTable = () =>
     usersCount > 0 && (
-      <UsersTable users={usersCrop} onSort={handleSort} {...rest} />
+      <UsersTable
+        users={usersCrop}
+        onSort={handleSort}
+        selectedSort={sortBy}
+        {...rest}
+      />
     );
 
   return (
