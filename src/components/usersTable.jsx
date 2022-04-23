@@ -3,9 +3,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import TableHeader from "./tableHeader";
 import TableBody from "./tableBody";
+import Bookmark from "./bookmark";
 
 const UsersTable = (props) => {
-  const { users, onSort, selectedSort/* , ...rest  */ } = props;
+  const {
+    users,
+    onSort,
+    selectedSort,
+    onUserBookmarkToggle /* , ...rest */,
+    // onUserRemove,
+  } = props;
 
   const columns = {
     name: { path: "name", name: "Имя" },
@@ -13,8 +20,27 @@ const UsersTable = (props) => {
     profession: { path: "profession.name", name: "Профессия" },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
     rate: { path: "rate", name: "Оценка" },
-    bookmark: { path: "bookmark", name: "Избранное" },
-    delete: {},
+    bookmark: {
+      path: "bookmark",
+      name: "Избранное",
+      component: (user) => (
+        <Bookmark
+          bookmarked={user.bookmark}
+          onBookmarkClick={() => onUserBookmarkToggle(user._id)}
+        />
+      ),
+    },
+    delete: {
+      component: "delete" /* (user) => (
+        <button
+          className="btn btn-sm btn-danger"
+          onClick={() => onUserRemove(user._id)}
+          // disabled={props.bookmark}
+        >
+          delete
+        </button>
+      ) */,
+    },
   };
 
   return (
@@ -34,6 +60,9 @@ UsersTable.propTypes = {
   users: PropTypes.array.isRequired,
   onSort: PropTypes.func.isRequired,
   selectedSort: PropTypes.object.isRequired,
+  onUserBookmarkToggle: PropTypes.func.isRequired,
+
+  onUserRemove: PropTypes.func.isRequired,
 };
 
 export default UsersTable;
