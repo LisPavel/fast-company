@@ -6,13 +6,8 @@ import TableBody from "./tableBody";
 import Bookmark from "./bookmark";
 
 const UsersTable = (props) => {
-  const {
-    users,
-    onSort,
-    selectedSort,
-    onUserBookmarkToggle /* , ...rest */,
-    // onUserRemove,
-  } = props;
+  const { users, onSort, selectedSort, onUserBookmarkToggle, onUserRemove } =
+    props;
 
   const columns = {
     name: { path: "name", name: "Имя" },
@@ -31,7 +26,7 @@ const UsersTable = (props) => {
       ),
     },
     delete: {
-      component: "delete" /* (user) => (
+      component: (user) => (
         <button
           className="btn btn-sm btn-danger"
           onClick={() => onUserRemove(user._id)}
@@ -39,7 +34,7 @@ const UsersTable = (props) => {
         >
           delete
         </button>
-      ) */,
+      ),
     },
   };
 
@@ -47,11 +42,6 @@ const UsersTable = (props) => {
     <table className="table table-hover">
       <TableHeader {...{ onSort, selectedSort, columns }} />
       <TableBody {...{ data: users, columns }} />
-      {/* <tbody>
-        {users.map((user) => (
-          <User {...rest} key={user._id} {...user} />
-        ))}
-      </tbody> */}
     </table>
   );
 };
@@ -61,7 +51,6 @@ UsersTable.propTypes = {
   onSort: PropTypes.func.isRequired,
   selectedSort: PropTypes.object.isRequired,
   onUserBookmarkToggle: PropTypes.func.isRequired,
-
   onUserRemove: PropTypes.func.isRequired,
 };
 
