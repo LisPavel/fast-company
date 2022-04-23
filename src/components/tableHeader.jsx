@@ -12,6 +12,18 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
     onSort({ path: item, order: "asc" });
   };
 
+  const renderSortDirection = (item) => {
+    if (item !== selectedSort.path) return null;
+
+    return (
+      <i
+        className={`bi bi-caret-${
+          selectedSort.order === "asc" ? "up" : "down"
+        }-fill`}
+      />
+    );
+  };
+
   return (
     <thead>
       <tr>
@@ -27,6 +39,7 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
             {...{ role: columns[col].path && "button" }}
           >
             {columns[col].name}
+            {renderSortDirection(columns[col].path)}
           </th>
         ))}
       </tr>
