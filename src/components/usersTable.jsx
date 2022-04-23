@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import TableHeader from "./tableHeader";
 import TableBody from "./tableBody";
 import Bookmark from "./bookmark";
+import QualitiesList from "./qualitiesList";
 
 const UsersTable = (props) => {
   const { users, onSort, selectedSort, onUserBookmarkToggle, onUserRemove } =
@@ -11,7 +12,10 @@ const UsersTable = (props) => {
 
   const columns = {
     name: { path: "name", name: "Имя" },
-    qualities: { name: "Качества" },
+    qualities: {
+      name: "Качества",
+      component: (user) => <QualitiesList {...user} />,
+    },
     profession: { path: "profession.name", name: "Профессия" },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
     rate: { path: "rate", name: "Оценка" },
