@@ -1,10 +1,11 @@
 import React from "react";
 // import User from "./user";
 import PropTypes from "prop-types";
-import TableHeader from "./tableHeader";
-import TableBody from "./tableBody";
+// import TableHeader from "./tableHeader";
+// import TableBody from "./tableBody";
 import Bookmark from "./bookmark";
 import QualitiesList from "./qualitiesList";
+import Table from "./table";
 
 const UsersTable = (props) => {
   const { users, onSort, selectedSort, onUserBookmarkToggle, onUserRemove } =
@@ -43,10 +44,12 @@ const UsersTable = (props) => {
   };
 
   return (
-    <table className="table table-hover">
-      <TableHeader {...{ onSort, selectedSort, columns }} />
-      <TableBody {...{ data: users, columns }} />
-    </table>
+    < Table
+      onSort={onSort}
+      selectedSort={selectedSort}
+      columns={columns}
+      data={users}
+    />
   );
 };
 
