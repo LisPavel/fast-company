@@ -4,11 +4,11 @@ import Bookmark from "./bookmark";
 import PropTypes from "prop-types";
 
 const User = (props) => {
-  const { onUserRemove, onUserBookmarkToggle } = props;
+  const { onDelete, onBookmarkToggle } = props;
 
-  const handleUserRemove = () => onUserRemove?.(props._id);
+  const handleUserRemove = () => onDelete?.(props._id);
 
-  const handleBookmarkClick = () => onUserBookmarkToggle(props._id);
+  const handleBookmarkClick = () => onBookmarkToggle(props._id);
 
   return (
     <tr>
@@ -22,10 +22,7 @@ const User = (props) => {
       <td>{props.completedMeetings}</td>
       <td>{`${props.rate}/5`}</td>
       <td>
-        <Bookmark
-          bookmarked={props.bookmark}
-          onBookmarkClick={handleBookmarkClick}
-        />
+        <Bookmark bookmarked={props.bookmark} onClick={handleBookmarkClick} />
       </td>
       <td>
         <button
@@ -41,8 +38,8 @@ const User = (props) => {
 };
 
 User.propTypes = {
-  onUserRemove: PropTypes.func.isRequired,
-  onUserBookmarkToggle: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onBookmarkToggle: PropTypes.func.isRequired,
   _id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   qualities: PropTypes.arrayOf(

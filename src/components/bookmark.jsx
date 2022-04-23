@@ -1,15 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Bookmark = (props) => {
-  const { onBookmarkClick } = props;
+const Bookmark = ({ bookmarked, ...rest }) => {
+  const btnStyle = bookmarked ? "primary" : "outline-secondary";
 
-  const btnStyle = props.bookmarked ? "primary" : "outline-secondary";
-
-  const iconStyle = props.bookmarked ? "-heart-fill" : "";
+  const iconStyle = bookmarked ? "-heart-fill" : "";
 
   return (
-    <button className={`btn btn-${btnStyle} btn-sm`} onClick={onBookmarkClick}>
+    <button className={`btn btn-${btnStyle} btn-sm`} {...rest}>
       <i className={`bi bi-bookmark${iconStyle}`}></i>
     </button>
   );
@@ -17,7 +15,6 @@ const Bookmark = (props) => {
 
 Bookmark.propTypes = {
   bookmarked: PropTypes.bool.isRequired,
-  onBookmarkClick: PropTypes.func.isRequired,
 };
 
 export default Bookmark;

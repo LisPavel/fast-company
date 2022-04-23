@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import _ from "lodash";
 
 import api from "../api";
@@ -11,14 +10,19 @@ import UsersTable from "./usersTable";
 
 import { paginate } from "../utils/paginate";
 
-const Users = (props) => {
-  const { users, ...rest } = props;
+const Users = () => {
+  // const { users, ...rest } = props;
   const pageSize = 8;
 
+  const [users, setUsers] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+
+  useEffect(() => {
+    api.users.fetchAll().then((data) => setUsers(data));
+  }, []);
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
@@ -26,6 +30,19 @@ const Users = (props) => {
   }, []);
 
   useEffect(() => setCurrentPage(1), [selectedProf]);
+
+  const handleUserRemove = (userId) => {
+    setUsers((prevState) => prevState.filter((user) => user._id !== userId));
+  };
+
+  const handleUserBookmarkToggle = (userId) => {
+    setUsers((prevState) =>
+      prevState.map((user) => ({
+        ...user,
+        bookmark: userId === user._id ? !user.bookmark : user.bookmark,
+      }))
+    );
+  };
 
   const handleProfessionSelect = (item) => {
     setSelectedProf(item);
@@ -43,6 +60,8 @@ const Users = (props) => {
     setSelectedProf();
   };
 
+  if (!users) return "loading...";
+
   const filteredUsers = selectedProf
     ? users.filter((user) => user.profession._id === selectedProf?._id)
     : users;
@@ -59,7 +78,8 @@ const Users = (props) => {
         users={usersCrop}
         onSort={handleSort}
         selectedSort={sortBy}
-        {...rest}
+        onDelete={handleUserRemove}
+        onBookmarkToggle={handleUserBookmarkToggle}
       />
     );
 
@@ -91,10 +111,6 @@ const Users = (props) => {
       </div>
     </div>
   );
-};
-
-Users.propTypes = {
-  users: PropTypes.array.isRequired,
 };
 
 export default Users;

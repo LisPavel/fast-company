@@ -8,8 +8,7 @@ import QualitiesList from "./qualitiesList";
 import Table from "./table";
 
 const UsersTable = (props) => {
-  const { users, onSort, selectedSort, onUserBookmarkToggle, onUserRemove } =
-    props;
+  const { users, onSort, selectedSort, onBookmarkToggle, onDelete } = props;
 
   const columns = {
     name: { path: "name", name: "Имя" },
@@ -26,7 +25,7 @@ const UsersTable = (props) => {
       component: (user) => (
         <Bookmark
           bookmarked={user.bookmark}
-          onBookmarkClick={() => onUserBookmarkToggle(user._id)}
+          onClick={() => onBookmarkToggle(user._id)}
         />
       ),
     },
@@ -34,7 +33,7 @@ const UsersTable = (props) => {
       component: (user) => (
         <button
           className="btn btn-sm btn-danger"
-          onClick={() => onUserRemove(user._id)}
+          onClick={() => onDelete(user._id)}
           // disabled={props.bookmark}
         >
           delete
@@ -44,7 +43,7 @@ const UsersTable = (props) => {
   };
 
   return (
-    < Table
+    <Table
       onSort={onSort}
       selectedSort={selectedSort}
       columns={columns}
@@ -57,8 +56,8 @@ UsersTable.propTypes = {
   users: PropTypes.array.isRequired,
   onSort: PropTypes.func.isRequired,
   selectedSort: PropTypes.object.isRequired,
-  onUserBookmarkToggle: PropTypes.func.isRequired,
-  onUserRemove: PropTypes.func.isRequired,
+  onBookmarkToggle: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default UsersTable;
