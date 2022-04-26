@@ -18,7 +18,7 @@ const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
-  const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+  const [sortBy, setSortBy] = useState({ path: "", order: "" });
 
   useEffect(() => {
     api.users.fetchAll().then((data) => setUsers(data));
