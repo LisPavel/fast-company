@@ -7,12 +7,10 @@ import _ from "lodash";
 
 const User = () => {
   const { id } = useParams();
-  console.log(id);
   const [user, setUser] = useState();
   useEffect(
     () =>
       userApi.getById(id).then((result) => {
-        console.log(result);
         setUser(result);
       }),
     []
@@ -20,7 +18,6 @@ const User = () => {
 
   const renderUser = (data) => {
     if (!data) return <h3> Loading... </h3>;
-    console.log(data);
     return (
       <div>
         <h3>{data.name}</h3>

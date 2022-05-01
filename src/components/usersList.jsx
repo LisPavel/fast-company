@@ -9,10 +9,8 @@ import GroupList from "./groupList";
 import UsersTable from "./usersTable";
 
 import { paginate } from "../utils/paginate";
-import { Switch, Route } from "react-router-dom";
-import User from "./user";
 
-const Users = () => {
+const UsersList = () => {
   // const { users, ...rest } = props;
   const pageSize = 8;
 
@@ -85,43 +83,34 @@ const Users = () => {
       />
     );
 
-  const renderUsersList = () => {
-    return (
-      <div className="d-flex">
-        {professions && (
-          <div className="d-flex flex-column flex-shrink-0 p-3">
-            <GroupList
-              items={professions}
-              onItemSelect={handleProfessionSelect}
-              selectedItem={selectedProf}
-            />
-            <button className="btn btn-secondary mt-2" onClick={clearFilter}>
-              Очистить
-            </button>
-          </div>
-        )}
-        <div className="d-flex flex-column">
-          <SearchStatus usersAmount={usersCount} />
-          {renderUsersTable()}
-          <div className="d-flex justify-content-center">
-            <Pagination
-              itemsCount={usersCount}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-              currentPage={currentPage}
-            />
-          </div>
+  return (
+    <div className="d-flex">
+      {professions && (
+        <div className="d-flex flex-column flex-shrink-0 p-3">
+          <GroupList
+            items={professions}
+            onItemSelect={handleProfessionSelect}
+            selectedItem={selectedProf}
+          />
+          <button className="btn btn-secondary mt-2" onClick={clearFilter}>
+            Очистить
+          </button>
+        </div>
+      )}
+      <div className="d-flex flex-column">
+        <SearchStatus usersAmount={usersCount} />
+        {renderUsersTable()}
+        <div className="d-flex justify-content-center">
+          <Pagination
+            itemsCount={usersCount}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            currentPage={currentPage}
+          />
         </div>
       </div>
-    );
-  };
-
-  return (
-    <Switch>
-      <Route path="/users/:id" component={User} />
-      <Route path="/users" render={renderUsersList} />
-    </Switch>
+    </div>
   );
 };
 
-export default Users;
+export default UsersList;
