@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 // import PropTypes from "prop-types";
 import QualitiesList from "./qualitiesList";
 import userApi from "../api/fake.api/user.api";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import _ from "lodash";
 
 const User = () => {
   const { id } = useParams();
   const [user, setUser] = useState();
+  const history = useHistory();
   useEffect(
     () =>
       userApi.getById(id).then((result) => {
@@ -16,19 +17,45 @@ const User = () => {
     []
   );
 
+  const handleBackClick = () => {
+    history.goBack();
+  };
+
   const renderUser = (data) => {
     if (!data) return <h3> Loading... </h3>;
     return (
-      <div>
-        <h3>{data.name}</h3>
-        <h4>Profession: {_.get(data, "profession.name")}</h4>
-        <p>
-          Qualities:
-          <QualitiesList qualities={data.qualities} />
-        </p>
-        <p>Completed meetings: {data.completedMeetings}</p>
-        <p>Rate: {data.rate}</p>
-        <p>Bookmarked: {data.bookmark ? "Yes" : "No"}</p>
+      <div className="card border-top-0 border-bottom-0">
+        <div className="card-header ps-0">
+          <button className="btn btn-link" onClick={handleBackClick}>
+            <i className="bi bi-chevron-left" />
+          </button>
+          <div className="card-body">
+            <h5 className="card-title">{data.name}</h5>
+            <h6 className="card-subtitle">{_.get(data, "profession.name")}</h6>
+          </div>
+        </div>
+        <table className="table table-striped m-0">
+          <tbody>
+            <tr>
+              <th scope="row">Qualities</th>
+              <td>
+                <QualitiesList qualities={data.qualities} />
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Completed meetings</th>
+              <td>{data.completedMeetings}</td>
+            </tr>
+            <tr>
+              <th scope="row">Rate </th>
+              <td>{data.rate}</td>
+            </tr>
+            <tr>
+              <th scope="row">Bookmarked</th>
+              <td>{data.bookmark ? "Yes" : "No"}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     );
   };
