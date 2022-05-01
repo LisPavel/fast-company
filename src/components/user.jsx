@@ -1,54 +1,41 @@
-import React from "react";
-import Qualitie from "./qualitie";
-import Bookmark from "./bookmark";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+// import PropTypes from "prop-types";
+import QualitiesList from "./qualitiesList";
+import userApi from "../api/fake.api/user.api";
+import { useParams } from "react-router-dom";
+import _ from "lodash";
 
-const User = (props) => {
-  const { onDelete, onBookmarkToggle } = props;
-
-  const handleUserRemove = () => onDelete?.(props._id);
-
-  const handleBookmarkClick = () => onBookmarkToggle(props._id);
-
-  return (
-    <tr>
-      <td>{props.name}</td>
-      <td>
-        {props.qualities.map((q) => (
-          <Qualitie key={q._id} {...q} />
-        ))}
-      </td>
-      <td>{props.profession.name}</td>
-      <td>{props.completedMeetings}</td>
-      <td>{`${props.rate}/5`}</td>
-      <td>
-        <Bookmark bookmarked={props.bookmark} onClick={handleBookmarkClick} />
-      </td>
-      <td>
-        <button
-          className="btn btn-sm btn-danger"
-          onClick={handleUserRemove}
-          // disabled={props.bookmark}
-        >
-          delete
-        </button>
-      </td>
-    </tr>
+const User = () => {
+  const { id } = useParams();
+  console.log(id);
+  const [user, setUser] = useState();
+  useEffect(
+    () =>
+      userApi.getById(id).then((result) => {
+        console.log(result);
+        setUser(result);
+      }),
+    []
   );
-};
 
-User.propTypes = {
-  onDelete: PropTypes.func.isRequired,
-  onBookmarkToggle: PropTypes.func.isRequired,
-  _id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  qualities: PropTypes.arrayOf(
-    PropTypes.shape({ _id: PropTypes.string.isRequired })
-  ).isRequired,
-  profession: PropTypes.shape({ name: PropTypes.string.isRequired }).isRequired,
-  completedMeetings: PropTypes.number.isRequired,
-  rate: PropTypes.number.isRequired,
-  bookmark: PropTypes.bool.isRequired,
+  const renderUser = (data) => {
+    if (!data) return <h3> Loading... </h3>;
+    console.log(data);
+    return (
+      <div>
+        <h3>{data.name}</h3>
+        <h4>Profession: {_.get(data, "profession.name")}</h4>
+        <p>
+          Qualities:
+          <QualitiesList qualities={data.qualities} />
+        </p>
+        <p>Completed meetings: {data.completedMeetings}</p>
+        <p>Rate: {data.rate}</p>
+        <p>Bookmarked: {data.bookmark ? "Yes" : "No"}</p>
+      </div>
+    );
+  };
+  return <>{renderUser(user)}</>;
 };
 
 export default User;
