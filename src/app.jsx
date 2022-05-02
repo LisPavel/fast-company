@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Users from "./layouts/users";
 import Main from "./layouts/main";
 import LogIn from "./layouts/login";
@@ -18,6 +18,7 @@ const App = () => {
         {Object.keys(layouts).map((path) => (
           <Route {...layouts[path]} key={path} />
         ))}
+        <Redirect to="/" />
       </Switch>
     </>
   );
