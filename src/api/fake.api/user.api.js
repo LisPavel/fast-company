@@ -150,6 +150,13 @@ const fetchAll = () =>
     }, 2000);
   });
 
+const getById = (id) => {
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(users.find((user) => user._id === id)), 1000)
+  );
+};
+
 export default {
   fetchAll,
+  getById,
 };

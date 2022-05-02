@@ -1,54 +1,65 @@
-import React from "react";
-import Qualitie from "./qualitie";
-import Bookmark from "./bookmark";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+// import PropTypes from "prop-types";
+import QualitiesList from "./qualitiesList";
+import userApi from "../api/fake.api/user.api";
+import { useParams, useHistory } from "react-router-dom";
+import _ from "lodash";
 
-const User = (props) => {
-  const { onDelete, onBookmarkToggle } = props;
-
-  const handleUserRemove = () => onDelete?.(props._id);
-
-  const handleBookmarkClick = () => onBookmarkToggle(props._id);
-
-  return (
-    <tr>
-      <td>{props.name}</td>
-      <td>
-        {props.qualities.map((q) => (
-          <Qualitie key={q._id} {...q} />
-        ))}
-      </td>
-      <td>{props.profession.name}</td>
-      <td>{props.completedMeetings}</td>
-      <td>{`${props.rate}/5`}</td>
-      <td>
-        <Bookmark bookmarked={props.bookmark} onClick={handleBookmarkClick} />
-      </td>
-      <td>
-        <button
-          className="btn btn-sm btn-danger"
-          onClick={handleUserRemove}
-          // disabled={props.bookmark}
-        >
-          delete
-        </button>
-      </td>
-    </tr>
+const User = () => {
+  const { id } = useParams();
+  const [user, setUser] = useState();
+  const history = useHistory();
+  useEffect(
+    () =>
+      userApi.getById(id).then((result) => {
+        setUser(result);
+      }),
+    []
   );
-};
 
-User.propTypes = {
-  onDelete: PropTypes.func.isRequired,
-  onBookmarkToggle: PropTypes.func.isRequired,
-  _id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  qualities: PropTypes.arrayOf(
-    PropTypes.shape({ _id: PropTypes.string.isRequired })
-  ).isRequired,
-  profession: PropTypes.shape({ name: PropTypes.string.isRequired }).isRequired,
-  completedMeetings: PropTypes.number.isRequired,
-  rate: PropTypes.number.isRequired,
-  bookmark: PropTypes.bool.isRequired,
+  const handleBackClick = () => {
+    history.goBack();
+  };
+
+  const renderUser = (data) => {
+    if (!data) return <h3> Loading... </h3>;
+    return (
+      <div className="card border-top-0 border-bottom-0">
+        <div className="card-header ps-0">
+          <button className="btn btn-link" onClick={handleBackClick}>
+            <i className="bi bi-chevron-left" />
+          </button>
+          <div className="card-body">
+            <h5 className="card-title">{data.name}</h5>
+            <h6 className="card-subtitle">{_.get(data, "profession.name")}</h6>
+          </div>
+        </div>
+        <table className="table table-striped m-0">
+          <tbody>
+            <tr>
+              <th scope="row">Qualities</th>
+              <td>
+                <QualitiesList qualities={data.qualities} />
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Completed meetings</th>
+              <td>{data.completedMeetings}</td>
+            </tr>
+            <tr>
+              <th scope="row">Rate </th>
+              <td>{data.rate}</td>
+            </tr>
+            <tr>
+              <th scope="row">Bookmarked</th>
+              <td>{data.bookmark ? "Yes" : "No"}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+  return <>{renderUser(user)}</>;
 };
 
 export default User;

@@ -10,7 +10,7 @@ import UsersTable from "./usersTable";
 
 import { paginate } from "../utils/paginate";
 
-const Users = () => {
+const UsersList = () => {
   // const { users, ...rest } = props;
   const pageSize = 8;
 
@@ -113,4 +113,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default UsersList;
