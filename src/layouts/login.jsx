@@ -10,8 +10,12 @@ const LogIn = () => {
     }));
     // setEmail(ev.target.value);
   };
+  const handleSubmit = (ev) => {
+    ev.preventDefault();
+    console.log(data);
+  };
   return (
-    <form action="">
+    <form onSubmit={handleSubmit}>
       <TextField
         label="Email"
         name="email"
@@ -25,6 +29,7 @@ const LogIn = () => {
         value={data.password}
         onChange={handleChange}
       />
+      <button>Submit</button>
     </form>
   );
 };
