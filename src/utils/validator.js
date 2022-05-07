@@ -9,7 +9,7 @@ export const validator = (data, cfg) => {
         break;
 
       case "isEmail": {
-        const emailRegExp = /^([a-zA-Z]{1}(\.{0,1}[\w]+)+)@(\w+)\.([a-z]+)$/g;
+        const emailRegExp = /^([a-zA-Z]{1}\S+)@(\w+)\.([a-z]+)$/g;
         statusValidate = !emailRegExp.test(value);
         break;
       }
