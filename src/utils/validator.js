@@ -7,6 +7,12 @@ export const validator = (data, cfg) => {
         if (value.trim() === "") return cfg.message;
         break;
 
+      case "isEmail": {
+        const emailRegExp = /^([a-zA-Z]{1}(\.{0,1}[\w]+)+)@(\w+)\.([a-z]+)$/g;
+        if (!emailRegExp.test(value)) return cfg.message;
+        break;
+      }
+
       default:
         break;
     }
@@ -19,7 +25,7 @@ export const validator = (data, cfg) => {
         data[fieldName],
         cfg[fieldName][validateMethod]
       );
-      if (!error) continue;
+      if (!error || errors[fieldName] != null) continue;
       errors[fieldName] = error;
     }
   }

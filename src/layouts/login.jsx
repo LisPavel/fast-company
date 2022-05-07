@@ -15,7 +15,10 @@ const LogIn = () => {
   };
 
   const validatorCfg = {
-    email: { isRequired: { message: "Email is required" } },
+    email: {
+      isRequired: { message: "Email is required" },
+      isEmail: { message: "Not correct email" },
+    },
     password: { isRequired: { message: "Password is required" } },
   };
 
