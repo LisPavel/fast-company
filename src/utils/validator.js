@@ -2,20 +2,39 @@ export const validator = (data, cfg) => {
   const errors = {};
 
   const validate = (method, value, cfg) => {
+    let statusValidate;
     switch (method) {
       case "isRequired":
-        if (value.trim() === "") return cfg.message;
+        statusValidate = value.trim() === "";
         break;
 
       case "isEmail": {
         const emailRegExp = /^([a-zA-Z]{1}(\.{0,1}[\w]+)+)@(\w+)\.([a-z]+)$/g;
-        if (!emailRegExp.test(value)) return cfg.message;
+        statusValidate = !emailRegExp.test(value);
+        break;
+      }
+
+      case "isCapitalSymbol": {
+        const capitalRegExp = /[A-Z]+/g;
+        statusValidate = !capitalRegExp.test(value);
+        break;
+      }
+
+      case "isContainDigit": {
+        const digitRegExp = /\d+/g;
+        statusValidate = !digitRegExp.test(value);
+        break;
+      }
+
+      case "min": {
+        statusValidate = value.length < cfg.value;
         break;
       }
 
       default:
         break;
     }
+    return statusValidate && cfg.message;
   };
 
   for (const fieldName of Object.keys(data)) {

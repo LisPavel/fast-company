@@ -19,7 +19,19 @@ const LogIn = () => {
       isRequired: { message: "Email is required" },
       isEmail: { message: "Not correct email" },
     },
-    password: { isRequired: { message: "Password is required" } },
+    password: {
+      isRequired: { message: "Password is required" },
+      isCapitalSymbol: {
+        message: "Password required at list 1 capital symbol",
+      },
+      isContainDigit: {
+        message: "Password required at list 1 digit",
+      },
+      min: {
+        value: 8,
+        message: "Password required minimum 8 symbols",
+      },
+    },
   };
 
   const validate = () => {
