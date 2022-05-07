@@ -40,6 +40,8 @@ const LogIn = () => {
     return Object.keys(errors).length === 0;
   };
 
+  const isValid = Object.keys(errors).length === 0;
+
   useEffect(() => validate(), [data]);
 
   const handleSubmit = (ev) => {
@@ -66,7 +68,7 @@ const LogIn = () => {
         onChange={handleChange}
         error={errors.password}
       />
-      <button>Submit</button>
+      <button disabled={!isValid}>Submit</button>
     </form>
   );
 };
