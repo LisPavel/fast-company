@@ -1,14 +1,14 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 
-import User from "../components/user";
-import UsersList from "../components/usersList";
+import UserPage from "../components/page/userPage";
+import UsersListPage from "../components/page/usersListPage";
 
 const Users = () => {
   return (
     <Switch>
-      <Route path="/users/:id" component={User} />
-      <Route path="/users" component={UsersList} />
+      <Route path="/users/:id" component={UserPage} />
+      <Route path="/users" component={UsersListPage} />
     </Switch>
   );
 };

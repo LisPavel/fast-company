@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 // import PropTypes from "prop-types";
-import QualitiesList from "./qualitiesList";
-import userApi from "../api/fake.api/user.api";
+import Qualities from "../../ui/qualities";
+import userApi from "../../../api/fake.api/user.api";
 import { useParams, useHistory } from "react-router-dom";
 import _ from "lodash";
 
-const User = () => {
+const UserPage = () => {
   const { id } = useParams();
   const [user, setUser] = useState();
   const history = useHistory();
@@ -39,7 +39,7 @@ const User = () => {
             <tr>
               <th scope="row">Qualities</th>
               <td>
-                <QualitiesList qualities={data.qualities} />
+                <Qualities qualities={data.qualities} />
               </td>
             </tr>
             <tr>
@@ -62,4 +62,4 @@ const User = () => {
   return <>{renderUser(user)}</>;
 };
 
-export default User;
+export default UserPage;
