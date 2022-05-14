@@ -3,18 +3,18 @@ import PropTypes from "prop-types";
 import Qualitie from "./qualitie";
 
 const QualitiesList = ({ qualities }) => {
-  return (
-    <>
-      {qualities.map((q) => (
-        <Qualitie key={q._id} {...q} />
-      ))}
-    </>
-  );
+    return (
+        <>
+            {qualities.map((q) => (
+                <Qualitie key={q._id} {...q} />
+            ))}
+        </>
+    );
 };
 
 QualitiesList.propTypes = {
-  qualities: PropTypes.arrayOf(
-    PropTypes.shape({ _id: PropTypes.string.isRequired })
-  ).isRequired,
+    qualities: PropTypes.arrayOf(
+        PropTypes.shape({ _id: PropTypes.string.isRequired })
+    ).isRequired,
 };
 export default QualitiesList;
