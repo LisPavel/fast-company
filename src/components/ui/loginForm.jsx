@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { validator } from "../../utils/validator.js";
+// import { validator } from "../../utils/validator.js";
 import CheckBoxField from "../common/form/checkBoxField.jsx";
 import TextField from "../common/form/textField";
+import * as yup from "yup";
 
 const LoginForm = () => {
   const [data, setData] = useState({ email: "", password: "", stayOn: false });
@@ -16,29 +17,50 @@ const LoginForm = () => {
     // setEmail(ev.target.value);
   };
 
-  const validatorCfg = {
-    email: {
-      isRequired: { message: "Email is required" },
-      isEmail: { message: "Not correct email" },
-    },
-    password: {
-      isRequired: { message: "Password is required" },
-      isCapitalSymbol: {
-        message: "Password required at list 1 capital symbol",
-      },
-      isContainDigit: {
-        message: "Password required at list 1 digit",
-      },
-      min: {
-        value: 8,
-        message: "Password required minimum 8 symbols",
-      },
-    },
-  };
+  const validateScheme = yup.object().shape({
+    password: yup
+      .string()
+      .required("Password is required")
+      .matches(/(?=.*[A-Z])/, "Password required at list 1 capital symbol")
+      .matches(/(?=.*\d)/, "Password required at list 1 digit")
+      .matches(
+        /(?=.*[!@#$%^&*])/,
+        "Password required at list 1 special symbol(!@#$%^&*)"
+      )
+      .matches(/(?=.{8,})/, "Password required minimum 8 symbols"),
+    email: yup
+      .string()
+      .required("Email is required")
+      .email("Not correct email"),
+  });
+
+  // const validatorCfg = {
+  //   email: {
+  //     isRequired: { message: "Email is required" },
+  //     isEmail: { message: "Not correct email" },
+  //   },
+  //   password: {
+  //     isRequired: { message: "Password is required" },
+  //     isCapitalSymbol: {
+  //       message: "Password required at list 1 capital symbol",
+  //     },
+  //     isContainDigit: {
+  //       message: "Password required at list 1 digit",
+  //     },
+  //     min: {
+  //       value: 8,
+  //       message: "Password required minimum 8 symbols",
+  //     },
+  //   },
+  // };
 
   const validate = () => {
-    const errors = validator(data, validatorCfg);
-    setErrors(errors);
+    validateScheme
+      .validate(data)
+      .then(() => setErrors({}))
+      .catch((err) => setErrors({ [err.path]: err.message }));
+    // const errors = validator(data, validatorCfg);
+    // setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
