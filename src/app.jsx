@@ -9,7 +9,7 @@ const App = () => {
   const layouts = {
     "/": { component: Main, exact: true, path: "/", name: "Main" },
     "/users": { component: Users, path: "/users", name: "Users" },
-    "/login": { component: LogIn, path: "/login", name: "Login" },
+    "/login": { component: LogIn, path: "/login/:type?", name: "Login" },
   };
   return (
     <>

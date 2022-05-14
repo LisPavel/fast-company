@@ -17,5 +17,6 @@ module.exports = {
     quotes: ["error", "double", { allowTemplateLiterals: true }],
     "comma-dangle": ["error", "only-multiline"],
     "space-before-function-paren": ["error", { named: "never" }],
+    "multiline-ternary": ["off"],
   },
 };
