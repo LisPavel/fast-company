@@ -5,7 +5,8 @@ export const validator = (data, cfg) => {
     let statusValidate;
     switch (method) {
       case "isRequired":
-        statusValidate = value.trim() === "";
+        if (typeof value === "boolean") statusValidate = !value;
+        else statusValidate = value.trim() === "";
         break;
 
       case "isEmail": {

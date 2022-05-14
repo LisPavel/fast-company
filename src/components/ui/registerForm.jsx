@@ -5,6 +5,7 @@ import { validator } from "../../utils/validator";
 import api from "../../api";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
+import CheckBoxField from "../common/form/checkBoxField";
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -13,6 +14,7 @@ const RegisterForm = () => {
     profession: "",
     sex: "male",
     qualities: [],
+    license: false,
   });
   const [errors, setErrors] = useState({});
   const [professions, setProfessions] = useState();
@@ -52,6 +54,11 @@ const RegisterForm = () => {
     },
     profession: {
       isRequired: { message: "Profession is required" },
+    },
+    license: {
+      isRequired: {
+        message: "You can't use this site without license agreement",
+      },
     },
   };
 
@@ -118,6 +125,14 @@ const RegisterForm = () => {
           value={data.qualities}
           label="Qualities"
         />
+        <CheckBoxField
+          name="license"
+          onChange={handleChange}
+          value={data.license}
+          error={errors.license}
+        >
+          Confirm <a>license agreement</a>
+        </CheckBoxField>
         <button className="btn btn-primary w-100 mx-auto" disabled={!isValid}>
           Submit
         </button>
