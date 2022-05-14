@@ -7,12 +7,13 @@ const MultiSelectField = ({
   onChange,
   name,
   options: _options,
+  defaultValue,
   label,
 }) => {
-  const options = Object.keys(_options).map((optKey) => ({
-    label: _options[optKey].name,
-    value: _options[optKey].value ?? _options[optKey]._id,
-  }));
+  const options =
+    !Array.isArray(_options) && typeof _options === "object"
+      ? Object.values(_options)
+      : _options;
 
   const handleChange = (value) => {
     onChange({ name, value });
@@ -32,6 +33,7 @@ const MultiSelectField = ({
         options={options}
         value={value}
         closeMenuOnSelect={false}
+        defaultValue={defaultValue}
       />
     </div>
   );
@@ -47,6 +49,7 @@ MultiSelectField.propTypes = {
   options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   value: PropTypes.array,
   label: PropTypes.string,
+  defaultValue: PropTypes.array,
 };
 
 export default MultiSelectField;

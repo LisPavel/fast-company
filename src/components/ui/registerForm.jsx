@@ -21,8 +21,25 @@ const RegisterForm = () => {
   const [qualities, setQualities] = useState();
 
   useEffect(() => {
-    api.professions.fetchAll().then((profs) => setProfessions(profs));
-    api.qualities.fetchAll().then((qualities) => setQualities(qualities));
+    api.professions
+      .fetchAll()
+      .then((profs) =>
+        Object.values(profs).map((prof) => ({
+          label: prof.name,
+          value: prof._id,
+        }))
+      )
+      .then((profs) => setProfessions(profs));
+    api.qualities
+      .fetchAll()
+      .then((qualities) =>
+        Object.values(qualities).map((qualitie) => ({
+          label: qualitie.name,
+          value: qualitie._id,
+          color: qualitie.color,
+        }))
+      )
+      .then((qualities) => setQualities(qualities));
   }, []);
 
   const handleChange = (data) => {
@@ -72,11 +89,39 @@ const RegisterForm = () => {
 
   useEffect(() => validate(), [data]);
 
+  const getProfessionById = (id) => {
+    for (const prof of professions) {
+      if (prof.value === id) {
+        return { _id: prof.value, name: prof.label };
+      }
+    }
+  };
+  const getQualities = (elements) => {
+    const qualitiesArray = [];
+    for (const elem of elements) {
+      for (const quality in qualities) {
+        if (elem.value === qualities[quality].value) {
+          qualitiesArray.push({
+            _id: qualities[quality].value,
+            name: qualities[quality].label,
+            color: qualities[quality].color,
+          });
+        }
+      }
+    }
+    return qualitiesArray;
+  };
+
   const handleSubmit = (ev) => {
     ev.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    console.log(data);
+    const { profession, qualities } = data;
+    console.log({
+      ...data,
+      profession: getProfessionById(profession),
+      qualities: getQualities(qualities),
+    });
   };
 
   return (
@@ -124,6 +169,7 @@ const RegisterForm = () => {
           onChange={handleChange}
           value={data.qualities}
           label="Qualities"
+          defaultValue={data.qualities}
         />
         <CheckBoxField
           name="license"

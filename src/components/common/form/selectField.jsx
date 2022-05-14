@@ -11,10 +11,10 @@ const SelectField = ({
   error,
   onChange,
 }) => {
-  const options = Object.keys(_options).map((optKey) => ({
-    name: _options[optKey].name,
-    value: _options[optKey].value ?? _options[optKey]._id,
-  }));
+  const options =
+    !Array.isArray(_options) && typeof _options === "object"
+      ? Object.values(_options)
+      : _options;
 
   const getInputClasses = () => {
     return `form-select${error ? " is-invalid" : ""}`;
@@ -31,7 +31,7 @@ const SelectField = ({
       </label>
       <select
         className={getInputClasses()}
-        id="validationCustom04"
+        id={name}
         value={value}
         onChange={handleChange}
         name={name}
@@ -42,7 +42,7 @@ const SelectField = ({
         {options &&
           options.map((option) => (
             <option value={option.value} key={option.value}>
-              {option.name}
+              {option.label}
             </option>
           ))}
       </select>

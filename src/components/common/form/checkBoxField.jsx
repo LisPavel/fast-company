@@ -13,12 +13,12 @@ const CheckBoxField = ({ name, value, onChange, children, error }) => {
       <input
         className={getInputClasses()}
         type="checkbox"
-        id="flexCheckDefault"
+        id={name}
         name={name}
         onChange={handleChange}
         checked={value}
       />
-      <label className="form-check-label" htmlFor="flexCheckDefault">
+      <label className="form-check-label" htmlFor={name}>
         {children}
       </label>
       {error && <div className="invalid-feedback">{error}</div>}
