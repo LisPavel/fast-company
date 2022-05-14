@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
 import TextField from "../common/form/textField";
+import SelectField from "../common/form/selectField";
 import { validator } from "../../utils/validator";
+import api from "../../api";
 
 const RegisterForm = () => {
-  const [data, setData] = useState({ email: "", password: "" });
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    profession: "",
+  });
   const [errors, setErrors] = useState({});
+  const [professions, setProfessions] = useState();
+
+  useEffect(() => {
+    api.professions.fetchAll().then((profs) => setProfessions(profs));
+  }, []);
 
   const handleChange = ({ target }) => {
     setData((prevState) => ({
@@ -31,6 +42,9 @@ const RegisterForm = () => {
         value: 8,
         message: "Password required minimum 8 symbols",
       },
+    },
+    profession: {
+      isRequired: { message: "Profession is required" },
     },
   };
 
@@ -68,6 +82,15 @@ const RegisterForm = () => {
           value={data.password}
           onChange={handleChange}
           error={errors.password}
+        />
+        <SelectField
+          label="Profession"
+          defaultValue="Chose your prof"
+          error={errors.profession}
+          name="profession"
+          onChange={handleChange}
+          options={professions}
+          value={data.profession}
         />
         <button className="btn btn-primary w-100 mx-auto" disabled={!isValid}>
           Submit
