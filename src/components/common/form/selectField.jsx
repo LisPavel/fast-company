@@ -11,24 +11,29 @@ const SelectField = ({
   error,
   onChange,
 }) => {
-  const options = Object.keys(_options).map((optionName) => ({
-    name: _options[optionName].name,
-    value: _options[optionName]._id,
+  const options = Object.keys(_options).map((optKey) => ({
+    name: _options[optKey].name,
+    value: _options[optKey].value ?? _options[optKey]._id,
   }));
 
   const getInputClasses = () => {
     return `form-select${error ? " is-invalid" : ""}`;
   };
+
+  const handleChange = ({ target: { value, name } }) => {
+    onChange({ name, value });
+  };
+
   return (
     <div className="mb-4">
-      <label htmlFor="validationCustom04" className="form-label">
+      <label htmlFor={name} className="form-label">
         {label}
       </label>
       <select
         className={getInputClasses()}
         id="validationCustom04"
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         name={name}
       >
         <option disabled value="">

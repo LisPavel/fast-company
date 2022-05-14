@@ -4,6 +4,7 @@ import SelectField from "../common/form/selectField";
 import { validator } from "../../utils/validator";
 import api from "../../api";
 import RadioField from "../common/form/radioField";
+import MultiSelectField from "../common/form/multiSelectField";
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -11,18 +12,22 @@ const RegisterForm = () => {
     password: "",
     profession: "",
     sex: "male",
+    qualities: [],
   });
   const [errors, setErrors] = useState({});
   const [professions, setProfessions] = useState();
+  const [qualities, setQualities] = useState();
 
   useEffect(() => {
     api.professions.fetchAll().then((profs) => setProfessions(profs));
+    api.qualities.fetchAll().then((qualities) => setQualities(qualities));
   }, []);
 
-  const handleChange = ({ target }) => {
+  const handleChange = (data) => {
+    if (!data) return;
     setData((prevState) => ({
       ...prevState,
-      [target.name]: target.value,
+      [data.name]: data.value,
     }));
     // setEmail(ev.target.value);
   };
@@ -104,6 +109,14 @@ const RegisterForm = () => {
             { name: "Other", value: "other" },
           ]}
           value={data.sex}
+          label="Select gender"
+        />
+        <MultiSelectField
+          name="qualities"
+          options={qualities}
+          onChange={handleChange}
+          value={data.qualities}
+          label="Qualities"
         />
         <button className="btn btn-primary w-100 mx-auto" disabled={!isValid}>
           Submit

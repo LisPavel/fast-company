@@ -16,15 +16,21 @@ const TextField = ({ name, value, onChange, type, label, error }) => {
     setShowPass(!showPass);
   };
 
+  const handleChange = ({ target: { value, name } }) => {
+    onChange({ name, value });
+  };
+
   return (
     <div className="mb-4 ">
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name} className="form-label">
+        {label}
+      </label>
       <div className={getInputGroupClasses()}>
         <input
           type={showPass ? "text" : type}
           id={name}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           name={name}
           className={getInputClasses()}
         />

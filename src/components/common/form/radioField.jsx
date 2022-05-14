@@ -10,6 +10,10 @@ const RadioField = ({
   error,
   isInline,
 }) => {
+  const handleChange = ({ target: { value, name } }) => {
+    onChange({ name, value });
+  };
+
   const renderOptions = () => {
     return options.map((option) => (
       <div
@@ -23,7 +27,7 @@ const RadioField = ({
           id={`${option.name}_${option.value}`}
           checked={option.value === value}
           value={option.value}
-          onChange={onChange}
+          onChange={handleChange}
         />
         <label
           className="form-check-label"
@@ -37,12 +41,8 @@ const RadioField = ({
 
   return (
     <div className="mb-4">
-      {label && (
-        <label htmlFor="validationCustom04" className="form-label me-3">
-          {label}
-        </label>
-      )}
-      {renderOptions()}
+      {label && <label className="form-label me-3">{label}</label>}
+      <div>{renderOptions()}</div>
       {error && <div className="invalid-feedback">{error}</div>}
     </div>
   );
