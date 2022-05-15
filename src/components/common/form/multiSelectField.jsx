@@ -9,6 +9,7 @@ const MultiSelectField = ({
     options: _options,
     defaultValue,
     label,
+    error,
 }) => {
     const options =
         !Array.isArray(_options) && typeof _options === "object"
@@ -19,6 +20,10 @@ const MultiSelectField = ({
         onChange({ name, value });
     };
 
+    const getInputClasses = () => {
+        return `basic-multi-select${error ? " is-invalid" : ""}`;
+    };
+
     return (
         <div className="mb-4">
             <label htmlFor={name} className="form-label">
@@ -27,7 +32,7 @@ const MultiSelectField = ({
             <ReactSelect
                 isMulti
                 onChange={handleChange}
-                className="basic-multi-select"
+                className={getInputClasses()}
                 classNamePrefix="select"
                 name={name}
                 options={options}
@@ -35,6 +40,7 @@ const MultiSelectField = ({
                 closeMenuOnSelect={false}
                 defaultValue={defaultValue}
             />
+            {error && <div className="invalid-feedback">{error}</div>}
         </div>
     );
 };
@@ -50,6 +56,7 @@ MultiSelectField.propTypes = {
     value: PropTypes.array,
     label: PropTypes.string,
     defaultValue: PropTypes.array,
+    error: PropTypes.string,
 };
 
 export default MultiSelectField;

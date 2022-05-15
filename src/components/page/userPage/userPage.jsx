@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 // import PropTypes from "prop-types";
 import Qualities from "../../ui/qualities";
 import userApi from "../../../api/fake.api/user.api";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import _ from "lodash";
 
 const UserPage = () => {
@@ -26,9 +26,20 @@ const UserPage = () => {
         return (
             <div className="card border-top-0 border-bottom-0">
                 <div className="card-header ps-0">
-                    <button className="btn btn-link" onClick={handleBackClick}>
-                        <i className="bi bi-chevron-left" />
-                    </button>
+                    <div className="d-flex justify-content-between">
+                        <button
+                            className="btn btn-link"
+                            onClick={handleBackClick}
+                        >
+                            <i className="bi bi-chevron-left" />
+                        </button>
+                        <Link
+                            className="btn btn-outline-primary"
+                            to={`${history.location.pathname}/edit`}
+                        >
+                            Edit
+                        </Link>
+                    </div>
                     <div className="card-body">
                         <h5 className="card-title">{data.name}</h5>
                         <h6 className="card-subtitle">
@@ -55,6 +66,14 @@ const UserPage = () => {
                         <tr>
                             <th scope="row">Bookmarked</th>
                             <td>{data.bookmark ? "Yes" : "No"}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Email</th>
+                            <td>{data.email}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Gender</th>
+                            <td>{data.sex}</td>
                         </tr>
                     </tbody>
                 </table>
