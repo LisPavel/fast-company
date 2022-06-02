@@ -30,7 +30,7 @@ const UserPage = () => {
             <div className="container">
                 <div className="row gutters-sm">
                     <div className="col-md-4 mb-3">
-                        <UserCard />
+                        <UserCard {...user} />
                         <QualitiesCard />
                         <MeetingsCard />
                     </div>
