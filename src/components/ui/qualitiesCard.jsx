@@ -1,6 +1,8 @@
 import React from "react";
+import PropTypes from "prop-types";
+import Qualitie from "./qualities/qualitie";
 
-const QualitiesCard = () => {
+const QualitiesCard = ({ qualities }) => {
     return (
         <div className="card mb-3">
             <div className="card-body d-flex flex-column justify-content-center text-center">
@@ -8,14 +10,17 @@ const QualitiesCard = () => {
                     <span>Qualities</span>
                 </h5>
                 <p className="card-text">
-                    <span className="badge bg-primary">Primary</span>
-                    <span className="badge bg-secondary">Secondary</span>
-                    <span className="badge bg-success">Success</span>
-                    <span className="badge bg-danger">Danger</span>
+                    {qualities.map((qualitie, index) => (
+                        <Qualitie {...qualitie} key={qualitie._id ?? index} />
+                    ))}
                 </p>
             </div>
         </div>
     );
+};
+
+QualitiesCard.propTypes = {
+    qualities: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default QualitiesCard;
