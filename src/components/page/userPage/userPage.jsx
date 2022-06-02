@@ -30,9 +30,11 @@ const UserPage = () => {
             <div className="container">
                 <div className="row gutters-sm">
                     <div className="col-md-4 mb-3">
-                        <UserCard />
+                        <UserCard {...user} />
                         <QualitiesCard qualities={user.qualities} />
-                        <MeetingsCard />
+                        <MeetingsCard
+                            completedMeetings={user.completedMeetings}
+                        />
                     </div>
                     <div className="col-md-8"></div>
                 </div>
