@@ -31,7 +31,7 @@ const UserPage = () => {
                 <div className="row gutters-sm">
                     <div className="col-md-4 mb-3">
                         <UserCard />
-                        <QualitiesCard />
+                        <QualitiesCard qualities={user.qualities} />
                         <MeetingsCard />
                     </div>
                     <div className="col-md-8"></div>
