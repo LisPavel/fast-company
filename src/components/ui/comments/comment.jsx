@@ -65,7 +65,8 @@ const Comment = ({ userId, content, createdAt, onDelete, _id }) => {
 Comment.propTypes = {
     content: PropTypes.string,
     userId: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired,
+    createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
     onDelete: PropTypes.func.isRequired,
     _id: PropTypes.string.isRequired,
 };

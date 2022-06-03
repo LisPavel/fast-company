@@ -6,8 +6,7 @@ import { useParams } from "react-router-dom";
 import UserCard from "../../ui/userCard";
 import QualitiesCard from "../../ui/qualitiesCard";
 import MeetingsCard from "../../ui/meetingsCard";
-import NewCommentForm from "../../ui/newComment";
-import CommentsList from "../../ui/comments";
+import Comments from "../../ui/comments";
 // import _ from "lodash";
 
 const UserPage = () => {
@@ -39,8 +38,7 @@ const UserPage = () => {
                         />
                     </div>
                     <div className="col-md-8">
-                        <NewCommentForm />
-                        <CommentsList />
+                        <Comments />
                     </div>
                 </div>
             </div>

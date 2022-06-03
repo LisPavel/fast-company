@@ -1,51 +1,47 @@
-import React, { useEffect, useState } from "react";
-// import PropTypes from "prop-types";
-import api from "../../../api";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Comment from "./comment";
-import _ from "lodash";
+import api from "../../../api";
+import CommentsList from "./commentsList";
+import NewCommentForm from "./newCommentForm";
 
-const CommentsList = () => {
+const Comments = () => {
     const { id } = useParams();
     const [comments, setComments] = useState([]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         api.comments.fetchCommentsForUser(id).then((result) => {
             setComments(result);
         });
+        api.users.fetchAll().then((users) => setUsers(users));
     }, []);
 
-    const sortedComments = _.orderBy(comments, ["created_at"], "desc");
+    const handleDelete = useCallback(
+        (commentId) => {
+            api.comments.remove(commentId).then((removedCommentId) => {
+                setComments((prevState) =>
+                    prevState.filter(
+                        (comment) => comment._id !== removedCommentId
+                    )
+                );
+            });
+        },
+        [setComments]
+    );
 
-    const handleDelete = (commentId) => {
-        console.log(commentId);
-        api.comments.remove(commentId).then((removedCommentId) => {
-            setComments((prevState) =>
-                prevState.filter((comment) => comment._id !== removedCommentId)
-            );
-        });
-    };
+    const handleSubmit = useCallback(
+        (newComment) => {
+            setComments((prevState) => [...prevState, newComment]);
+        },
+        [setComments]
+    );
 
     return (
         <>
-            {comments.length > 0 && (
-                <div className="card mb-3">
-                    <div className="card-body">
-                        <h2>Comments</h2>
-                        <hr />
-                        {sortedComments.map((comment) => (
-                            <Comment
-                                {...comment}
-                                key={comment._id}
-                                createdAt={comment.created_at}
-                                onDelete={handleDelete}
-                            />
-                        ))}
-                    </div>
-                </div>
-            )}
+            <NewCommentForm users={users} onAddComment={handleSubmit} />
+            <CommentsList comments={comments} onDelete={handleDelete} />
         </>
     );
 };
 
-export default CommentsList;
+export default Comments;

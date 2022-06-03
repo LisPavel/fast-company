@@ -1,5 +1,3 @@
-import CommentsList from "./comments";
+import Comments from "./comments";
 
-export default CommentsList;
-
-export * from "./comment";
+export default Comments;
