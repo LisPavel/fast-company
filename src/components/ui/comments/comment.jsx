@@ -2,18 +2,26 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import api from "../../../api";
+import { formatDate } from "../../../utils/date";
 
 const Comment = ({ userId, content, createdAt }) => {
     const [user, setUser] = useState();
     useEffect(() => {
         api.users.getById(userId).then((user) => setUser(user));
     }, []);
+
+    const imageSrc = `https://avatars.dicebear.com/api/avataaars/${(
+        Math.random() + 1
+    )
+        .toString(36)
+        .substring(7)}.svg`;
+
     const renderComment = () => {
         if (!user) return <>Loading...</>;
         return (
             <div className="d-flex flex-start">
                 <img
-                    src="https://avatars.dicebear.com/api/avataaars/qweqasdas.svg"
+                    src={imageSrc}
                     className="rounded-circle shadow-1-strong me-3"
                     alt="avatar"
                     width="65"
@@ -24,7 +32,9 @@ const Comment = ({ userId, content, createdAt }) => {
                         <div className="d-flex justify-content-between align-items-center">
                             <p className="mb-1">
                                 {user.name}{" "}
-                                <span className="small">{createdAt}</span>
+                                <span className="small">
+                                    {formatDate(createdAt)}
+                                </span>
                             </p>
                             <button className="btn btn-sm text-primary d-flex align-items-center">
                                 <i className="bi bi-x-lg"></i>

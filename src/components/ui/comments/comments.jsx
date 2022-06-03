@@ -3,16 +3,20 @@ import React, { useEffect, useState } from "react";
 import api from "../../../api";
 import { useParams } from "react-router-dom";
 import Comment from "./comment";
+import _ from "lodash";
 
 const CommentsList = () => {
     const { id } = useParams();
     const [comments, setComments] = useState([]);
+
     useEffect(() => {
         api.comments.fetchCommentsForUser(id).then((result) => {
-            console.log(result);
             setComments(result);
         });
     }, []);
+
+    const sortedComments = _.orderBy(comments, ["created_at"], "desc");
+
     return (
         <>
             {comments.length > 0 && (
@@ -20,7 +24,7 @@ const CommentsList = () => {
                     <div className="card-body">
                         <h2>Comments</h2>
                         <hr />
-                        {comments.map((comment) => (
+                        {sortedComments.map((comment) => (
                             <Comment
                                 {...comment}
                                 key={comment._id}
