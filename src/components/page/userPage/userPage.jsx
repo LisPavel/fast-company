@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-// import PropTypes from "prop-types";
-// import Qualities from "../../ui/qualities";
+import { useParams, useHistory } from "react-router-dom";
+
 import userApi from "../../../api/fake.api/user.api";
-import { useParams } from "react-router-dom";
 import UserCard from "../../ui/userCard";
 import QualitiesCard from "../../ui/qualitiesCard";
 import MeetingsCard from "../../ui/meetingsCard";
+import Comments from "../../ui/comments";
 // import _ from "lodash";
 
 const UserPage = () => {
     const { id } = useParams();
     const [user, setUser] = useState();
-    // const history = useHistory();
+    const history = useHistory();
     useEffect(
         () =>
             userApi.getById(id).then((result) => {
@@ -20,14 +20,20 @@ const UserPage = () => {
         []
     );
 
-    // const handleBackClick = () => {
-    //     history.goBack();
-    // };
+    const handleBackClick = () => {
+        history.goBack();
+    };
 
     const renderUser = (data) => {
         if (!data) return <h3> Loading... </h3>;
         return (
             <div className="container">
+                <button
+                    className="btn btn-outline-secondary mb-3"
+                    onClick={handleBackClick}
+                >
+                    <i className="bi bi-chevron-left"></i> Users
+                </button>
                 <div className="row gutters-sm">
                     <div className="col-md-4 mb-3">
                         <UserCard {...user} />
@@ -36,7 +42,9 @@ const UserPage = () => {
                             completedMeetings={user.completedMeetings}
                         />
                     </div>
-                    <div className="col-md-8"></div>
+                    <div className="col-md-8">
+                        <Comments />
+                    </div>
                 </div>
             </div>
         );
