@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import api from "../../../api";
 import { formatDate } from "../../../utils/date";
 
-const Comment = ({ userId, content, createdAt }) => {
+const Comment = ({ userId, content, createdAt, onDelete, _id }) => {
     const [user, setUser] = useState();
     useEffect(() => {
         api.users.getById(userId).then((user) => setUser(user));
@@ -15,6 +15,10 @@ const Comment = ({ userId, content, createdAt }) => {
     )
         .toString(36)
         .substring(7)}.svg`;
+
+    const handleClick = () => {
+        onDelete(_id);
+    };
 
     const renderComment = () => {
         if (!user) return <>Loading...</>;
@@ -36,7 +40,10 @@ const Comment = ({ userId, content, createdAt }) => {
                                     {formatDate(createdAt)}
                                 </span>
                             </p>
-                            <button className="btn btn-sm text-primary d-flex align-items-center">
+                            <button
+                                className="btn btn-sm text-primary d-flex align-items-center"
+                                onClick={handleClick}
+                            >
                                 <i className="bi bi-x-lg"></i>
                             </button>
                         </div>
@@ -59,6 +66,8 @@ Comment.propTypes = {
     content: PropTypes.string,
     userId: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    _id: PropTypes.string.isRequired,
 };
 
 export default Comment;

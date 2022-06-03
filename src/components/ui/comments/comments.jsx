@@ -17,6 +17,15 @@ const CommentsList = () => {
 
     const sortedComments = _.orderBy(comments, ["created_at"], "desc");
 
+    const handleDelete = (commentId) => {
+        console.log(commentId);
+        api.comments.remove(commentId).then((removedCommentId) => {
+            setComments((prevState) =>
+                prevState.filter((comment) => comment._id !== removedCommentId)
+            );
+        });
+    };
+
     return (
         <>
             {comments.length > 0 && (
@@ -29,6 +38,7 @@ const CommentsList = () => {
                                 {...comment}
                                 key={comment._id}
                                 createdAt={comment.created_at}
+                                onDelete={handleDelete}
                             />
                         ))}
                     </div>
