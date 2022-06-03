@@ -24,14 +24,17 @@ const NewCommentForm = ({ users, onAddComment }) => {
         },
     };
 
-    const validate = () => {
-        const errors = validator(comment, validatorCfg);
-        setErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
+    const validate = useCallback(
+        (data) => {
+            const errors = validator(data, validatorCfg);
+            setErrors(errors);
+            return Object.keys(errors).length === 0;
+        },
+        [setErrors]
+    );
 
     useEffect(() => {
-        validate();
+        validate(comment);
     }, [comment]);
 
     const isValid = Object.keys(errors).length === 0;
@@ -49,8 +52,7 @@ const NewCommentForm = ({ users, onAddComment }) => {
 
     const handleSubmit = useCallback(
         (data) => {
-            const isValid = validate();
-            console.log("handleSubmit", isValid);
+            const isValid = validate(data);
             if (!isValid) return;
             api.comments.add(data).then((newComment) => {
                 onAddComment(newComment);
