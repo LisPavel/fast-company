@@ -1,18 +1,40 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import SelectField from "../../common/form/selectField";
 import TextAreaField from "../../common/form/textAreaField";
 import api from "../../../api";
+import { validator } from "../../../utils/validator";
 
 const NewCommentForm = ({ users, onAddComment }) => {
     const initialData = { userId: "", content: "" };
 
     const [comment, setComment] = useState(initialData);
+    const [errors, setErrors] = useState({});
 
     const usersOptions = users.map((user) => ({
         value: user._id,
         label: user.name,
     }));
+
+    const validatorCfg = {
+        userId: { isRequired: { message: "User is required" } },
+        content: {
+            isRequired: { message: "Post is required" },
+            min: { message: "Post required at list 5 symbols", value: 5 },
+        },
+    };
+
+    const validate = () => {
+        const errors = validator(comment, validatorCfg);
+        setErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    useEffect(() => {
+        validate();
+    }, [comment]);
+
+    const isValid = Object.keys(errors).length === 0;
 
     const handleChange = useCallback(
         (data) => {
@@ -27,6 +49,9 @@ const NewCommentForm = ({ users, onAddComment }) => {
 
     const handleSubmit = useCallback(
         (data) => {
+            const isValid = validate();
+            console.log("handleSubmit", isValid);
+            if (!isValid) return;
             api.comments.add(data).then((newComment) => {
                 onAddComment(newComment);
                 setComment(initialData);
@@ -53,6 +78,7 @@ const NewCommentForm = ({ users, onAddComment }) => {
                             label="User"
                             onChange={handleChange}
                             value={comment.userId}
+                            error={errors.userId}
                         />
                     </div>
                     <div className="mb-4">
@@ -61,11 +87,14 @@ const NewCommentForm = ({ users, onAddComment }) => {
                             name="content"
                             value={comment.content}
                             onChange={handleChange}
+                            error={errors.content}
                             rows="3"
                         />
                     </div>
                     <div className="d-flex justify-content-end">
-                        <button className="btn btn-primary">Publish</button>
+                        <button className="btn btn-primary" disabled={!isValid}>
+                            Publish
+                        </button>
                     </div>
                 </form>
             </div>
