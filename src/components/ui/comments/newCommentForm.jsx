@@ -4,9 +4,11 @@ import SelectField from "../../common/form/selectField";
 import TextAreaField from "../../common/form/textAreaField";
 import api from "../../../api";
 import { validator } from "../../../utils/validator";
+import { useParams } from "react-router-dom";
 
 const NewCommentForm = ({ users, onAddComment }) => {
-    const initialData = { userId: "", content: "" };
+    const { id } = useParams();
+    const initialData = { userId: "", content: "", pageId: id };
 
     const [comment, setComment] = useState(initialData);
     const [errors, setErrors] = useState({});
