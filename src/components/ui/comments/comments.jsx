@@ -1,52 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+// import PropTypes from "prop-types";
+import api from "../../../api";
+import { useParams } from "react-router-dom";
+import Comment from "./comment";
+import _ from "lodash";
 
 const CommentsList = () => {
+    const { id } = useParams();
+    const [comments, setComments] = useState([]);
+
+    useEffect(() => {
+        api.comments.fetchCommentsForUser(id).then((result) => {
+            setComments(result);
+        });
+    }, []);
+
+    const sortedComments = _.orderBy(comments, ["created_at"], "desc");
+
+    const handleDelete = (commentId) => {
+        console.log(commentId);
+        api.comments.remove(commentId).then((removedCommentId) => {
+            setComments((prevState) =>
+                prevState.filter((comment) => comment._id !== removedCommentId)
+            );
+        });
+    };
+
     return (
-        <div className="card mb-3">
-            <div className="card-body">
-                <h2>Comments</h2>
-                <hr />
-                <div className="bg-light card-body mb-3">
-                    <div className="row">
-                        <div className="col">
-                            <div className="d-flex flex-start">
-                                <img
-                                    src="https://avatars.dicebear.com/api/avataaars/qweqasdas.svg"
-                                    className="rounded-circle shadow-1-strong me-3"
-                                    alt="avatar"
-                                    width="65"
-                                    height="65"
-                                />
-                                <div className="flex-grow-1 flex-shrink-1">
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between align-items-center">
-                                            <p className="mb-1">
-                                                Джон Дориан
-                                                <span className="small">
-                                                    5 минут назад
-                                                </span>
-                                            </p>
-                                            <button className="btn btn-sm text-primary d-flex align-items-center">
-                                                <i className="bi bi-x-lg"></i>
-                                            </button>
-                                        </div>
-                                        <p className="small mb-0">
-                                            Lorem ipsum dolor sit amet
-                                            consectetur adipisicing elit.
-                                            Corporis, soluta facilis fugit hic
-                                            quasi sapiente accusamus quia
-                                            voluptatem dolorum laboriosam id
-                                            iste voluptas modi animi eius
-                                            voluptatum adipisci amet officiis.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <>
+            {comments.length > 0 && (
+                <div className="card mb-3">
+                    <div className="card-body">
+                        <h2>Comments</h2>
+                        <hr />
+                        {sortedComments.map((comment) => (
+                            <Comment
+                                {...comment}
+                                key={comment._id}
+                                createdAt={comment.created_at}
+                                onDelete={handleDelete}
+                            />
+                        ))}
                     </div>
                 </div>
-            </div>
-        </div>
+            )}
+        </>
     );
 };
 
