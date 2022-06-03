@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-// import PropTypes from "prop-types";
-import Qualities from "../../ui/qualities";
+import { useParams, useHistory } from "react-router-dom";
+
 import userApi from "../../../api/fake.api/user.api";
-import { useParams, useHistory, Link } from "react-router-dom";
-import _ from "lodash";
+import UserCard from "../../ui/userCard";
+import QualitiesCard from "../../ui/qualitiesCard";
+import MeetingsCard from "../../ui/meetingsCard";
+import Comments from "../../ui/comments";
+// import _ from "lodash";
 
 const UserPage = () => {
     const { id } = useParams();
@@ -24,59 +27,25 @@ const UserPage = () => {
     const renderUser = (data) => {
         if (!data) return <h3> Loading... </h3>;
         return (
-            <div className="card border-top-0 border-bottom-0">
-                <div className="card-header ps-0">
-                    <div className="d-flex justify-content-between">
-                        <button
-                            className="btn btn-link"
-                            onClick={handleBackClick}
-                        >
-                            <i className="bi bi-chevron-left" />
-                        </button>
-                        <Link
-                            className="btn btn-outline-primary"
-                            to={`${history.location.pathname}/edit`}
-                        >
-                            Edit
-                        </Link>
+            <div className="container">
+                <button
+                    className="btn btn-outline-secondary mb-3"
+                    onClick={handleBackClick}
+                >
+                    <i className="bi bi-chevron-left"></i> Users
+                </button>
+                <div className="row gutters-sm">
+                    <div className="col-md-4 mb-3">
+                        <UserCard {...user} />
+                        <QualitiesCard qualities={user.qualities} />
+                        <MeetingsCard
+                            completedMeetings={user.completedMeetings}
+                        />
                     </div>
-                    <div className="card-body">
-                        <h5 className="card-title">{data.name}</h5>
-                        <h6 className="card-subtitle">
-                            {_.get(data, "profession.name")}
-                        </h6>
+                    <div className="col-md-8">
+                        <Comments />
                     </div>
                 </div>
-                <table className="table table-striped m-0">
-                    <tbody>
-                        <tr>
-                            <th scope="row">Qualities</th>
-                            <td>
-                                <Qualities qualities={data.qualities} />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Completed meetings</th>
-                            <td>{data.completedMeetings}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Rate </th>
-                            <td>{data.rate}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Bookmarked</th>
-                            <td>{data.bookmark ? "Yes" : "No"}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Email</th>
-                            <td>{data.email}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Gender</th>
-                            <td>{data.sex}</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         );
     };
