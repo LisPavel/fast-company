@@ -6,6 +6,7 @@ import LogIn from "./layouts/login";
 import NavBar from "./components/ui/navBar";
 import { ToastContainer } from "react-toastify";
 import { ProfessionProvider } from "./hooks/useProfessions";
+import { QualitiesProvider } from "./hooks/useQualities";
 
 const App = () => {
     const layouts = {
@@ -16,14 +17,16 @@ const App = () => {
     return (
         <>
             <NavBar items={layouts} />
-            <ProfessionProvider>
-                <Switch>
-                    {Object.keys(layouts).map((path) => (
-                        <Route {...layouts[path]} key={path} />
-                    ))}
-                    <Redirect to="/" />
-                </Switch>
-            </ProfessionProvider>
+            <QualitiesProvider>
+                <ProfessionProvider>
+                    <Switch>
+                        {Object.keys(layouts).map((path) => (
+                            <Route {...layouts[path]} key={path} />
+                        ))}
+                        <Redirect to="/" />
+                    </Switch>
+                </ProfessionProvider>
+            </QualitiesProvider>
             <ToastContainer />
         </>
     );

@@ -1,8 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Qualitie from "./qualitie";
+import { useQualities } from "../../../hooks/useQualities";
 
-const QualitiesList = ({ qualities }) => {
+const QualitiesList = ({ ids }) => {
+    const { getQuality, isLoading } = useQualities();
+    const qualities = isLoading ? [] : ids.map((id) => getQuality(id));
     return (
         <>
             {qualities.map((q) => (
@@ -13,7 +16,7 @@ const QualitiesList = ({ qualities }) => {
 };
 
 QualitiesList.propTypes = {
-    qualities: PropTypes.arrayOf(
+    ids: PropTypes.arrayOf(
         PropTypes.shape({ _id: PropTypes.string.isRequired })
     ).isRequired,
 };
