@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Qualitie from "./qualities/qualitie";
+import Qualities from "./qualities";
 
 const QualitiesCard = ({ qualities }) => {
     return (
@@ -10,9 +10,7 @@ const QualitiesCard = ({ qualities }) => {
                     <span>Qualities</span>
                 </h5>
                 <p className="card-text">
-                    {qualities.map((qualitie, index) => (
-                        <Qualitie {...qualitie} key={qualitie._id ?? index} />
-                    ))}
+                    <Qualities qualities={qualities} />
                 </p>
             </div>
         </div>
