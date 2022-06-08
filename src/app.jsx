@@ -4,6 +4,7 @@ import Users from "./layouts/users";
 import Main from "./layouts/main";
 import LogIn from "./layouts/login";
 import NavBar from "./components/ui/navBar";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
     const layouts = {
@@ -20,6 +21,7 @@ const App = () => {
                 ))}
                 <Redirect to="/" />
             </Switch>
+            <ToastContainer />
         </>
     );
     // return <Users />;

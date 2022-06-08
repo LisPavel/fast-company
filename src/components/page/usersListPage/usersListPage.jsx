@@ -16,19 +16,14 @@ const UsersListPage = () => {
     // const { users, ...rest } = props;
     const pageSize = 8;
 
-    const _users = useUsers();
+    const { users } = useUsers();
 
-    const [users, setUsers] = useState();
     const [currentPage, setCurrentPage] = useState(1);
     const [filter, setFilter] = useState();
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [searchStr, setSearchStr] = useState("");
     const [sortBy, setSortBy] = useState({ path: "", order: "" });
-
-    useEffect(() => {
-        api.users.fetchAll().then((data) => setUsers(data));
-    }, []);
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data));
@@ -38,18 +33,20 @@ const UsersListPage = () => {
     useEffect(() => setCurrentPage(1), [selectedProf, searchStr]);
 
     const handleUserRemove = (userId) => {
-        setUsers((prevState) =>
-            prevState.filter((user) => user._id !== userId)
-        );
+        // setUsers((prevState) =>
+        //     prevState.filter((user) => user._id !== userId)
+        // );
+        console.log("delete user with id ", userId);
     };
 
     const handleUserBookmarkToggle = (userId) => {
-        setUsers((prevState) =>
-            prevState.map((user) => ({
-                ...user,
-                bookmark: userId === user._id ? !user.bookmark : user.bookmark,
-            }))
-        );
+        // setUsers((prevState) =>
+        //     prevState.map((user) => ({
+        //         ...user,
+        //         bookmark: userId === user._id ? !user.bookmark : user.bookmark,
+        //     }))
+        // );
+        console.log("toggle user bookmark", userId);
     };
 
     const handleProfessionSelect = (item) => {
@@ -85,7 +82,7 @@ const UsersListPage = () => {
         searchStr.length === 0 && setFilter(undefined);
     };
 
-    if (!users) return "loading...";
+    // if (!users) return "loading...";
 
     const filterUsers = (user) => {
         const comparedValue = _.get(user, filter.path);
