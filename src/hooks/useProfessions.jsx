@@ -1,20 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import userService from "../services/userService";
 import { toast } from "react-toastify";
 
-const UserContext = React.createContext();
+import professionService from "../services/professionService";
 
-export const useUsers = () => {
-    return useContext(UserContext);
+const ProfessionContext = React.createContext();
+
+export const useProfessions = () => {
+    return useContext(ProfessionContext);
 };
 
-const UserProvider = ({ children }) => {
-    const [users, setUsers] = useState([]);
+export const ProfessionProvider = ({ children }) => {
+    const [professions, setProfessions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => getUsers(), []);
+    useEffect(() => getProfessionsList(), []);
 
     useEffect(() => {
         if (error) {
@@ -23,10 +24,10 @@ const UserProvider = ({ children }) => {
         }
     }, [error]);
 
-    async function getUsers() {
+    async function getProfessionsList() {
         try {
-            const { content } = await userService.get();
-            setUsers(content);
+            const { content } = await professionService.get();
+            setProfessions(content);
         } catch (error) {
             errorCatcher(error);
         } finally {
@@ -40,18 +41,22 @@ const UserProvider = ({ children }) => {
         setError(message);
     }
 
+    function getProfession(id) {
+        return professions.find((p) => p._id === id);
+    }
+
     return (
-        <UserContext.Provider value={{ users }}>
-            {!isLoading ? children : <h1>Users Loading...</h1>}
-        </UserContext.Provider>
+        <ProfessionContext.Provider
+            value={{ professions, isLoading, getProfession }}
+        >
+            {children}
+        </ProfessionContext.Provider>
     );
 };
 
-UserProvider.propTypes = {
+ProfessionProvider.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.node,
         PropTypes.arrayOf(PropTypes.node),
     ]),
 };
-
-export default UserProvider;
