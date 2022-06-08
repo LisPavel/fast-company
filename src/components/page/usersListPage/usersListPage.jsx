@@ -10,10 +10,13 @@ import UsersTable from "../../ui/usersTable";
 import SearchField from "../../ui/searchField";
 
 import { paginate } from "../../../utils/paginate";
+import { useUsers } from "../../../hooks/useUsers";
 
 const UsersListPage = () => {
     // const { users, ...rest } = props;
     const pageSize = 8;
+
+    const _users = useUsers();
 
     const [users, setUsers] = useState();
     const [currentPage, setCurrentPage] = useState(1);
