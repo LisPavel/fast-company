@@ -9,21 +9,21 @@ import { ProfessionProvider } from "./hooks/useProfessions";
 
 const App = () => {
     const layouts = {
-        "/": { path: "/", name: "Main" },
-        "/users": { path: "/users", name: "Users" },
-        "/login": { path: "/login/:type?", name: "Login" },
+        "/": { component: Main, exact: true, path: "/", name: "Main" },
+        "/users": { component: Users, path: "/users", name: "Users" },
+        "/login": { component: LogIn, path: "/login/:type?", name: "Login" },
     };
     return (
         <>
             <NavBar items={layouts} />
-            <Switch>
-                <Route component={Main} exact={true} path="/" />
-                <ProfessionProvider>
-                    <Route component={Users} path="/users" />
-                    <Route component={LogIn} path="/login/:type?" />
-                </ProfessionProvider>
-                <Redirect to="/" />
-            </Switch>
+            <ProfessionProvider>
+                <Switch>
+                    {Object.keys(layouts).map((path) => (
+                        <Route {...layouts[path]} key={path} />
+                    ))}
+                    <Redirect to="/" />
+                </Switch>
+            </ProfessionProvider>
             <ToastContainer />
         </>
     );
