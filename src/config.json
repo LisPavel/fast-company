@@ -1,3 +1,4 @@
 {
-    "apiEndPoint": "http://100.103.170.33:4000/api/v1"
+    "apiEndPoint": "https://fast-company-firebase-966be-default-rtdb.europe-west1.firebasedatabase.app/",
+    "isFireBase": true
 }
