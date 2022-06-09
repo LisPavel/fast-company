@@ -36,8 +36,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const signUp = async ({ email, password, ...rest }) => {
-        const key = "AIzaSyDH5J236OxkC-LhOKwi4nD8yG1uKt6gL5A";
-        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`;
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
         try {
             const { data } = await httpAuth.post(url, {
                 email,
