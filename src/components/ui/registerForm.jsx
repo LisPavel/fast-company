@@ -81,7 +81,7 @@ const RegisterForm = () => {
         }));
     }
 
-    const handleSubmit = (ev) => {
+    const handleSubmit = async (ev) => {
         ev.preventDefault();
         const isValid = validate();
         if (!isValid) return;
@@ -90,7 +90,11 @@ const RegisterForm = () => {
             qualities: data.qualities.map(({ value }) => value),
         };
         console.log(newData);
-        signUp(newData);
+        try {
+            await signUp(newData);
+        } catch (error) {
+            setErrors(error);
+        }
     };
 
     return (

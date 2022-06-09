@@ -35,9 +35,15 @@ export const AuthProvider = ({ children }) => {
             });
             setTokens(data);
             await createUser({ ...rest, email, _id: data.localId });
-            console.log(data);
         } catch (error) {
             errorCatcher(error);
+            const { code, message } = error.response.data.error;
+            if (code === 400) {
+                if (message === "EMAIL_EXISTS") {
+                    const errorObject = { email: "User with this email already exists" };
+                    throw errorObject;
+                }
+            }
         }
     };
 
@@ -45,7 +51,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const { content } = await userService.create(data);
             setUser(content);
-            console.log(content);
+            // console.log(content);
         } catch (error) {
             errorCatcher(error);
         }
