@@ -8,6 +8,7 @@ import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
 import { useQualities } from "../../hooks/useQualities";
 import { useProfessions } from "../../hooks/useProfessions";
+import { useAuth } from "../../hooks/useAuth";
 
 const RegisterForm = () => {
     const [data, setData] = useState({
@@ -21,6 +22,7 @@ const RegisterForm = () => {
     const [errors, setErrors] = useState({});
     const { qualities } = useQualities();
     const { professions } = useProfessions();
+    const { signUp } = useAuth();
 
     const qualitiesOptions = toOptions(qualities);
     const professionOptions = toOptions(professions);
@@ -72,29 +74,6 @@ const RegisterForm = () => {
 
     useEffect(() => validate(), [data]);
 
-    // const getProfessionById = (id) => {
-    //     for (const prof of professions) {
-    //         if (prof.value === id) {
-    //             return { _id: prof.value, name: prof.label };
-    //         }
-    //     }
-    // };
-    // const getQualities = (elements) => {
-    //     const qualitiesArray = [];
-    //     for (const elem of elements) {
-    //         for (const quality in qualities) {
-    //             if (elem.value === qualities[quality].value) {
-    //                 qualitiesArray.push({
-    //                     _id: qualities[quality].value,
-    //                     name: qualities[quality].label,
-    //                     color: qualities[quality].color,
-    //                 });
-    //             }
-    //         }
-    //     }
-    //     return qualitiesArray;
-    // };
-
     function toOptions(arr = []) {
         return arr.map((item) => ({
             value: item._id,
@@ -110,8 +89,8 @@ const RegisterForm = () => {
             ...data,
             qualities: data.qualities.map(({ value }) => value),
         };
-        // const { profession, qualities } = data;
         console.log(newData);
+        signUp(newData);
     };
 
     return (

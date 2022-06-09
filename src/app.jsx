@@ -7,6 +7,7 @@ import NavBar from "./components/ui/navBar";
 import { ToastContainer } from "react-toastify";
 import { ProfessionProvider } from "./hooks/useProfessions";
 import { QualitiesProvider } from "./hooks/useQualities";
+import { AuthProvider } from "./hooks/useAuth";
 
 const App = () => {
     const layouts = {
@@ -16,17 +17,19 @@ const App = () => {
     };
     return (
         <>
-            <NavBar items={layouts} />
-            <QualitiesProvider>
-                <ProfessionProvider>
-                    <Switch>
-                        {Object.keys(layouts).map((path) => (
-                            <Route {...layouts[path]} key={path} />
-                        ))}
-                        <Redirect to="/" />
-                    </Switch>
-                </ProfessionProvider>
-            </QualitiesProvider>
+            <AuthProvider>
+                <NavBar items={layouts} />
+                <QualitiesProvider>
+                    <ProfessionProvider>
+                        <Switch>
+                            {Object.keys(layouts).map((path) => (
+                                <Route {...layouts[path]} key={path} />
+                            ))}
+                            <Redirect to="/" />
+                        </Switch>
+                    </ProfessionProvider>
+                </QualitiesProvider>
+            </AuthProvider>
             <ToastContainer />
         </>
     );
