@@ -14,7 +14,7 @@ const NavBar = ({ items }) => {
         <ul className="nav nav-tabs">
             {Object.keys(items).map((item) => (
                 <li className="nav-item" key={item}>
-                    <Link className={getClassName(item)} to={items[item].path}>
+                    <Link className={getClassName(item)} to={item}>
                         {items[item].name}
                     </Link>
                 </li>
