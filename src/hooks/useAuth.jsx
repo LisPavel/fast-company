@@ -8,7 +8,9 @@ import { setTokens } from "../services/localStorageService";
 // import { toast } from "react-toastify";
 
 const AuthContext = React.createContext();
-const httpAuth = axios.create();
+const httpAuth = axios.create({
+    baseURL: "https://identitytoolkit.googleapis.com/v1/",
+});
 
 export const useAuth = () => {
     return useContext(AuthContext);
@@ -26,7 +28,8 @@ export const AuthProvider = ({ children }) => {
     }, [error]);
 
     const signUp = async ({ email, password, ...rest }) => {
-        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const url = `accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+
         try {
             const { data } = await httpAuth.post(url, {
                 email,
@@ -40,8 +43,40 @@ export const AuthProvider = ({ children }) => {
             const { code, message } = error.response.data.error;
             if (code === 400) {
                 if (message === "EMAIL_EXISTS") {
-                    const errorObject = { email: "User with this email already exists" };
+                    const errorObject = {
+                        email: "User with this email already exists",
+                    };
                     throw errorObject;
+                }
+            }
+        }
+    };
+    const signIn = async ({ email, password }) => {
+        const url = `accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        try {
+            const { data } = await httpAuth.post(url, {
+                email,
+                password,
+                returnSecureKey: true,
+            });
+            setTokens(data);
+        } catch (error) {
+            errorCatcher(error);
+
+            const { code, message } = error.response.data.error;
+
+            if (code === 400) {
+                if (message === "INVALID_PASSWORD") {
+                    const errObject = {
+                        password: "Incorrect password. Try again",
+                    };
+                    throw errObject;
+                }
+                if (message === "EMAIL_NOT_FOUND") {
+                    const errObject = {
+                        email: "No user with such email",
+                    };
+                    throw errObject;
                 }
             }
         }
@@ -64,7 +99,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ signUp, currentUser }}>
+        <AuthContext.Provider value={{ signUp, currentUser, signIn }}>
             {children}
         </AuthContext.Provider>
     );
