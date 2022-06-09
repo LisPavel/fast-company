@@ -4,6 +4,7 @@ import UserEditPage from "../components/page/userEditPage";
 
 import UserPage from "../components/page/userPage";
 import UsersListPage from "../components/page/usersListPage";
+import UserProvider from "../hooks/useUsers";
 
 const Users = () => {
     const pages = [
@@ -12,11 +13,13 @@ const Users = () => {
         { path: "/users", component: UsersListPage },
     ];
     return (
-        <Switch>
-            {pages.map((pageCfg) => (
-                <Route {...pageCfg} key={pageCfg.path} />
-            ))}
-        </Switch>
+        <UserProvider>
+            <Switch>
+                {pages.map((pageCfg) => (
+                    <Route {...pageCfg} key={pageCfg.path} />
+                ))}
+            </Switch>
+        </UserProvider>
     );
 };
 
