@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import userService from "../services/userService";
 import { toast } from "react-toastify";
+import { setTokens } from "../services/localStorageService";
 // import userService from "../services/userService";
 // import { toast } from "react-toastify";
 
@@ -12,10 +13,6 @@ const httpAuth = axios.create();
 export const useAuth = () => {
     return useContext(AuthContext);
 };
-
-const TOKEN_KEY = "jwt-token";
-const REFRESH_KEY = "jwt-refresh-token";
-const EXPIRES_KEY = "jwt-expires";
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setUser] = useState({});
@@ -27,13 +24,6 @@ export const AuthProvider = ({ children }) => {
             setError(null);
         }
     }, [error]);
-
-    function setTokens({ refreshToken, idToken, expiresIn = 3600 }) {
-        const expiresDate = new Date().getTime() + expiresIn * 1000;
-        localStorage.setItem(TOKEN_KEY, idToken);
-        localStorage.setItem(REFRESH_KEY, refreshToken);
-        localStorage.setItem(EXPIRES_KEY, expiresDate);
-    }
 
     const signUp = async ({ email, password, ...rest }) => {
         const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
