@@ -9,8 +9,6 @@ const QualitiesList = ({ ids }) => {
 };
 
 QualitiesList.propTypes = {
-    ids: PropTypes.arrayOf(
-        PropTypes.shape({ _id: PropTypes.string.isRequired })
-    ).isRequired,
+    ids: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 export default QualitiesList;

@@ -40,7 +40,7 @@ export const validator = (data, cfg) => {
 
     for (const fieldName of Object.keys(data)) {
         if (cfg[fieldName] == null) continue;
-        console.log(fieldName);
+        // console.log(fieldName);
         for (const validateMethod of Object.keys(cfg[fieldName])) {
             const error = validate(
                 validateMethod,
