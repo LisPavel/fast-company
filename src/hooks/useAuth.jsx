@@ -10,8 +10,11 @@ import localStorageService, {
 // import { toast } from "react-toastify";
 
 const AuthContext = React.createContext();
-const httpAuth = axios.create({
+export const httpAuth = axios.create({
     baseURL: "https://identitytoolkit.googleapis.com/v1/",
+    params: {
+        key: process.env.REACT_APP_FIREBASE_KEY,
+    },
 });
 
 export const useAuth = () => {
@@ -44,13 +47,13 @@ export const AuthProvider = ({ children }) => {
     };
 
     const signUp = async ({ email, password, ...rest }) => {
-        const url = `accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const url = "accounts:signUp";
 
         try {
             const { data } = await httpAuth.post(url, {
                 email,
                 password,
-                returnSecureKey: true,
+                returnSecureToken: true,
             });
             setTokens(data);
             await createUser({
@@ -74,12 +77,12 @@ export const AuthProvider = ({ children }) => {
         }
     };
     const signIn = async ({ email, password }) => {
-        const url = `accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const url = "accounts:signInWithPassword";
         try {
             const { data } = await httpAuth.post(url, {
                 email,
                 password,
-                returnSecureKey: true,
+                returnSecureToken: true,
             });
             setTokens(data);
             getUserData();
