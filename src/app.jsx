@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import { ProfessionProvider } from "./hooks/useProfessions";
 import { QualitiesProvider } from "./hooks/useQualities";
 import { AuthProvider } from "./hooks/useAuth";
+import ProtectedRoute from "./components/common/protectedRoute";
 
 const App = () => {
     const layouts = {
@@ -17,6 +18,7 @@ const App = () => {
             path: "/users",
             name: "Users",
             onLoggedIn: true,
+            protected: true,
         },
         "/login": {
             component: LogIn,
@@ -32,9 +34,16 @@ const App = () => {
                 <QualitiesProvider>
                     <ProfessionProvider>
                         <Switch>
-                            {Object.keys(layouts).map((path) => (
-                                <Route {...layouts[path]} key={path} />
-                            ))}
+                            {Object.keys(layouts).map((path) =>
+                                layouts[path].protected ? (
+                                    <ProtectedRoute
+                                        {...layouts[path]}
+                                        key={path}
+                                    />
+                                ) : (
+                                    <Route {...layouts[path]} key={path} />
+                                )
+                            )}
                             <Redirect to="/" />
                         </Switch>
                     </ProfessionProvider>
