@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import NavProfile from "./navProfile";
 
 const NavBar = ({ items }) => {
     const location = useLocation();
@@ -40,7 +41,7 @@ const NavBar = ({ items }) => {
                 <ul className="nav">{renderItems()}</ul>
                 <div className="d-flex">
                     {currentUser ? (
-                        <p>User</p>
+                        <NavProfile />
                     ) : (
                         <Link className="nav-link" to="/login">
                             {items["/login"].name}
