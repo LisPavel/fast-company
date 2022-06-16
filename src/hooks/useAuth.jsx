@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import userService from "../services/userService";
 import { toast } from "react-toastify";
-import { setTokens } from "../services/localStorageService";
+import localStorageService, {
+    setTokens,
+} from "../services/localStorageService";
 // import userService from "../services/userService";
 // import { toast } from "react-toastify";
 
@@ -19,6 +21,16 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [currentUser, setUser] = useState({});
     const [error, setError] = useState(null);
+
+    const getUserData = async () => {
+        const { content } = await userService.getCurrentUser();
+        setUser(content);
+    };
+
+    useEffect(() => {
+        if (!localStorageService.getAccessToken()) return;
+        getUserData();
+    }, []);
 
     useEffect(() => {
         if (error) {
@@ -70,6 +82,7 @@ export const AuthProvider = ({ children }) => {
                 returnSecureKey: true,
             });
             setTokens(data);
+            getUserData();
         } catch (error) {
             errorCatcher(error);
 
