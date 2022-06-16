@@ -27,6 +27,10 @@ export const AuthProvider = ({ children }) => {
         }
     }, [error]);
 
+    const randomInt = (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    };
+
     const signUp = async ({ email, password, ...rest }) => {
         const url = `accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
 
@@ -37,7 +41,13 @@ export const AuthProvider = ({ children }) => {
                 returnSecureKey: true,
             });
             setTokens(data);
-            await createUser({ ...rest, email, _id: data.localId });
+            await createUser({
+                ...rest,
+                email,
+                _id: data.localId,
+                rate: randomInt(1, 5),
+                completedMeetings: randomInt(0, 200),
+            });
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -86,7 +96,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const { content } = await userService.create(data);
             setUser(content);
-            // console.log(content);
+            console.log(content);
         } catch (error) {
             errorCatcher(error);
         }
