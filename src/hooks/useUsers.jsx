@@ -27,10 +27,11 @@ const UserProvider = ({ children }) => {
         try {
             const { content } = await userService.get();
             setUsers(content);
+            setIsLoading(false);
         } catch (error) {
             errorCatcher(error);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     }
 

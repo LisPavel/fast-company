@@ -22,7 +22,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-    const [currentUser, setUser] = useState({});
+    const [currentUser, setUser] = useState();
     const [error, setError] = useState(null);
 
     const getUserData = async () => {
