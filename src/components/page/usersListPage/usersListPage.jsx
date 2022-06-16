@@ -27,7 +27,7 @@ const UsersListPage = () => {
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data));
-        return () => console.log("unmount");
+        // return () => console.log("unmount");
     }, []);
 
     useEffect(() => setCurrentPage(1), [selectedProf, searchStr]);
@@ -100,17 +100,6 @@ const UsersListPage = () => {
 
     const usersCount = filteredUsers.length;
 
-    const renderUsersTable = () =>
-        usersCount > 0 && (
-            <UsersTable
-                users={usersCrop}
-                onSort={handleSort}
-                selectedSort={sortBy}
-                onDelete={handleUserRemove}
-                onBookmarkToggle={handleUserBookmarkToggle}
-            />
-        );
-
     return (
         <div className="d-flex">
             {professions && (
@@ -131,7 +120,13 @@ const UsersListPage = () => {
             <div className="d-flex flex-column">
                 <SearchStatus usersAmount={usersCount} />
                 <SearchField onChange={handleSearchChange} value={searchStr} />
-                {renderUsersTable()}
+                <UsersTable
+                    users={usersCrop}
+                    onSort={handleSort}
+                    selectedSort={sortBy}
+                    onDelete={handleUserRemove}
+                    onBookmarkToggle={handleUserBookmarkToggle}
+                />
                 <div className="d-flex justify-content-center">
                     <Pagination
                         itemsCount={usersCount}

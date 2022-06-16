@@ -36,6 +36,12 @@ http.interceptors.request.use(
                     console.log(error);
                 }
             }
+
+            const accessToken = localStorageService.getAccessToken();
+
+            if (accessToken) {
+                config.params = { ...config.params, auth: accessToken };
+            }
         }
         return config;
     },
