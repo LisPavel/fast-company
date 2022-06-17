@@ -37,7 +37,11 @@ const formatDate = (dateStr) => {
     if (diffInMin <= 30) return "30 минут назад";
 
     const diffInDays = convertToUnit(diff, "d");
-    if (diffInDays <= 1) return `${date.getHours()}.${date.getMinutes()}`;
+    if (diffInDays <= 1) {
+        return `${date.getHours()}:${
+            date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+        }`;
+    }
     if (diffInDays <= 365) return `${date.getDate()}.${date.getMonth() + 1}`;
 
     return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
