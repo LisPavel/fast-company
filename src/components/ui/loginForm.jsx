@@ -13,6 +13,7 @@ const LoginForm = () => {
     });
     const [errors, setErrors] = useState({});
     const history = useHistory();
+    console.log(history);
 
     const { signIn } = useAuth();
 
@@ -62,7 +63,11 @@ const LoginForm = () => {
 
         try {
             await signIn(data);
-            history.push("/");
+            history.push(
+                history.location.state.from.pathname
+                    ? history.location.state.from.pathname
+                    : "/"
+            );
         } catch (error) {
             setErrors(error);
         }

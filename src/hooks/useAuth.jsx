@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
                 returnSecureToken: true,
             });
             setTokens(data);
-            getUserData();
+            await getUserData();
         } catch (error) {
             errorCatcher(error);
 
