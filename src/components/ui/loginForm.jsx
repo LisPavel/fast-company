@@ -13,7 +13,6 @@ const LoginForm = () => {
     });
     const [errors, setErrors] = useState({});
     const history = useHistory();
-    console.log(history);
 
     const { signIn } = useAuth();
 

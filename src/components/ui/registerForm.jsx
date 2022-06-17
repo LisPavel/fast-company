@@ -20,6 +20,7 @@ const RegisterForm = () => {
         sex: "male",
         qualities: [],
         license: false,
+        image: createImage(),
     });
     const [errors, setErrors] = useState({});
     const history = useHistory();
@@ -69,6 +70,11 @@ const RegisterForm = () => {
                 message: "You can't use this site without license agreement",
             },
         },
+        image: {
+            isRequired: {
+                message: "You need to create image",
+            },
+        },
     };
 
     const validate = () => {
@@ -104,6 +110,12 @@ const RegisterForm = () => {
             setErrors(error);
         }
     };
+
+    function createImage() {
+        return `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+            .toString(36)
+            .substring(7)}.svg`;
+    }
 
     return (
         <>
@@ -167,6 +179,27 @@ const RegisterForm = () => {
                 >
                     Confirm <a>license agreement</a>
                 </CheckBoxField>
+
+                <img
+                    src={data.image}
+                    alt="avatar"
+                    className="img-responsive rounded-circle shadow-sm mb-3"
+                    height="140px"
+                />
+
+                <button
+                    className="btn btn-primary ms-3 "
+                    onClick={() =>
+                        handleChange({
+                            name: "image",
+                            value: createImage(),
+                        })
+                    }
+                    type="button"
+                >
+                    Update image
+                </button>
+
                 <button
                     className="btn btn-primary w-100 mx-auto"
                     disabled={!isValid}
