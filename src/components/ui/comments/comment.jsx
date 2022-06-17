@@ -4,9 +4,11 @@ import PropTypes from "prop-types";
 // import api from "../../../api";
 import { formatDate } from "../../../utils/date";
 import { useUsers } from "../../../hooks/useUsers";
+import { useAuth } from "../../../hooks/useAuth";
 
 const Comment = ({ userId, content, createdAt, onDelete, _id }) => {
     const { getUserById } = useUsers();
+    const { currentUser } = useAuth();
     const user = getUserById(userId);
 
     const handleClick = () => {
@@ -33,12 +35,14 @@ const Comment = ({ userId, content, createdAt, onDelete, _id }) => {
                                     {formatDate(createdAt)}
                                 </span>
                             </p>
-                            <button
-                                className="btn btn-sm text-primary d-flex align-items-center"
-                                onClick={handleClick}
-                            >
-                                <i className="bi bi-x-lg"></i>
-                            </button>
+                            {currentUser._id === userId && (
+                                <button
+                                    className="btn btn-sm text-primary d-flex align-items-center"
+                                    onClick={handleClick}
+                                >
+                                    <i className="bi bi-x-lg"></i>
+                                </button>
+                            )}
                         </div>
                         <p className="small mb-0">{content}</p>
                     </div>

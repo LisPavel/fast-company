@@ -10,6 +10,7 @@ import { QualitiesProvider } from "./hooks/useQualities";
 import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./components/common/protectedRoute";
 import LogOut from "./layouts/logOut";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
     const layouts = {

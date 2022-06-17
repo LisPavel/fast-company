@@ -40,11 +40,11 @@ export const CommentsProvider = ({ children }) => {
         try {
             const { content } = await commentService.createComment(comment);
             setComments((prevState) => [...prevState, content]);
-            console.log(content);
+            // console.log(content);
         } catch (error) {
             errorCatcher(error);
         }
-        console.log(comment);
+        // console.log(comment);
     }
 
     async function getComments() {
@@ -58,15 +58,29 @@ export const CommentsProvider = ({ children }) => {
         }
     }
 
-    function errorCatcher(error) {
-        console.log(error);
-        const { message } = error.response.data;
-        setError(message);
+    async function removeComment(id) {
+        try {
+            const { content } = await commentService.removeComment(id);
+            if (content === null) {
+                setComments((prevState) =>
+                    prevState.filter((c) => c._id !== id)
+                );
+            }
+            // console.log(content);
+        } catch (error) {
+            errorCatcher(error);
+        }
+    }
+
+    function errorCatcher(data) {
+        console.log(data);
+        const { message, error } = data.response.data;
+        setError(message ?? error);
     }
 
     return (
         <CommentsContext.Provider
-            value={{ comments, createComment, isLoading }}
+            value={{ comments, createComment, isLoading, removeComment }}
         >
             {children}
         </CommentsContext.Provider>

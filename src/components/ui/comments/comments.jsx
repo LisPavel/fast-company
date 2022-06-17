@@ -4,9 +4,11 @@ import CommentsList from "./commentsList";
 import NewCommentForm from "./newCommentForm";
 
 const Comments = () => {
-    const { comments, createComment } = useComments();
+    const { comments, createComment, removeComment } = useComments();
 
-    const handleDelete = useCallback((commentId) => {}, []);
+    const handleDelete = useCallback((commentId) => {
+        removeComment(commentId);
+    }, []);
 
     const handleAddComment = useCallback((newComment) => {
         createComment(newComment);
