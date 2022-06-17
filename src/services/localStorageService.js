@@ -32,10 +32,18 @@ export const getUserId = () => {
     return localStorage.getItem(USERID_KEY);
 };
 
+export const removeAuthData = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_KEY);
+    localStorage.removeItem(EXPIRES_KEY);
+    localStorage.removeItem(USERID_KEY);
+};
+
 export default {
     setTokens,
     getAccessToken,
     getRefreshToken,
     getExpiresDate,
     getUserId,
+    removeAuthData,
 };

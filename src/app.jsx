@@ -9,6 +9,7 @@ import { ProfessionProvider } from "./hooks/useProfessions";
 import { QualitiesProvider } from "./hooks/useQualities";
 import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./components/common/protectedRoute";
+import LogOut from "./layouts/logOut";
 
 const App = () => {
     const layouts = {
@@ -25,6 +26,10 @@ const App = () => {
             path: "/login/:type?",
             name: "Login",
             onLoggedIn: false,
+        },
+        "/logout": {
+            component: LogOut,
+            path: "/logout",
         },
     };
     return (

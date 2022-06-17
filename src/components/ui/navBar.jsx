@@ -27,6 +27,7 @@ const NavBar = ({ items }) => {
             .filter((item) => item !== "/login")
             .map((item) => {
                 const current = items[item];
+                if (current.name == null) return null;
                 if (current.onLoggedIn == null) {
                     return renderItem({ path: item, data: current });
                 }

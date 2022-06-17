@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import localStorageService, {
     setTokens,
 } from "../services/localStorageService";
+import { useHistory } from "react-router-dom";
 // import userService from "../services/userService";
 // import { toast } from "react-toastify";
 
@@ -25,6 +26,7 @@ export const AuthProvider = ({ children }) => {
     const [currentUser, setUser] = useState();
     const [error, setError] = useState(null);
     const [isLoading, setLoading] = useState(true);
+    const history = useHistory();
 
     const getUserData = async () => {
         try {
@@ -114,6 +116,11 @@ export const AuthProvider = ({ children }) => {
             }
         }
     };
+    const logOut = () => {
+        localStorageService.removeAuthData();
+        setUser(null);
+        history.push("/");
+    };
 
     async function createUser(data) {
         try {
@@ -132,7 +139,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ signUp, currentUser, signIn }}>
+        <AuthContext.Provider value={{ signUp, currentUser, signIn, logOut }}>
             {!isLoading ? children : "Loading"}
         </AuthContext.Provider>
     );
