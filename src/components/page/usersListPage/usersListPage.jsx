@@ -10,6 +10,7 @@ import SearchField from "../../ui/searchField";
 import { paginate } from "../../../utils/paginate";
 import { useUsers } from "../../../hooks/useUsers";
 import { useProfessions } from "../../../hooks/useProfessions";
+import { useAuth } from "../../../hooks/useAuth";
 
 const UsersListPage = () => {
     // const { users, ...rest } = props;
@@ -18,6 +19,7 @@ const UsersListPage = () => {
     const { users } = useUsers();
 
     const { professions, isLoading: professionsLoading } = useProfessions();
+    const { currentUser } = useAuth();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [filter, setFilter] = useState();
@@ -79,15 +81,20 @@ const UsersListPage = () => {
 
     // if (!users) return "loading...";
 
-    const filterUsers = (user) => {
-        const comparedValue = _.get(user, filter.path);
-        if (filter.exact) return comparedValue === filter.value;
+    const filterUsers = (data) => {
+        const usersFilter = (user) => {
+            const comparedValue = _.get(user, filter.path);
+            if (filter.exact) return comparedValue === filter.value;
 
-        const regExp = new RegExp(filter.value, "gi");
-        return regExp.test(comparedValue);
+            const regExp = new RegExp(filter.value, "gi");
+            return regExp.test(comparedValue);
+        };
+        const filteredUsers = filter ? data.filter(usersFilter) : data;
+
+        return filteredUsers.filter((u) => u._id !== currentUser._id);
     };
 
-    const filteredUsers = filter ? users.filter(filterUsers) : users;
+    const filteredUsers = filterUsers(users);
 
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
 

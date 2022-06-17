@@ -2,32 +2,38 @@ import React from "react";
 import PropTypes from "prop-types";
 import CardWrapper from "../common/CardWrapper";
 import { Link, useLocation } from "react-router-dom";
+import { useProfessions } from "../../hooks/useProfessions";
+import { useAuth } from "../../hooks/useAuth";
 
-const UserCard = ({ name, profession, rate }) => {
+const UserCard = ({ user }) => {
     const location = useLocation();
+    const { getProfession } = useProfessions();
+
+    const profession = getProfession(user.profession);
+
+    const { currentUser } = useAuth();
 
     return (
         <CardWrapper className="mb-3">
-            <Link
-                type="button"
-                className="position-absolute top-0 end-0 btn btn-light btn-sm"
-                to={`${location.pathname}/edit`}
-            >
-                <i className="bi bi-gear"></i>
-            </Link>
+            {currentUser._id === user._id && (
+                <Link
+                    type="button"
+                    className="position-absolute top-0 end-0 btn btn-light btn-sm"
+                    to={`${location.pathname}/edit`}
+                >
+                    <i className="bi bi-gear"></i>
+                </Link>
+            )}
+
             <div className=" d-flex flex-column align-items-center text-center position-relative">
                 <img
-                    src={`https://avatars.dicebear.com/api/avataaars/${(
-                        Math.random() + 1
-                    )
-                        .toString(36)
-                        .substring(7)}.svg`}
+                    src={user.image}
                     className="rounded-circle shadow-1-strong me-3"
                     alt="avatar"
                     width="150"
                 />
                 <div className="mt-3">
-                    <h4>{name}</h4>
+                    <h4>{user.name}</h4>
                     <p className="text-secondary mb-1">{profession.name}</p>
                     <div className="text-muted">
                         <i
@@ -38,7 +44,7 @@ const UserCard = ({ name, profession, rate }) => {
                             className="bi bi-caret-up text-secondary"
                             role="button"
                         ></i>
-                        <span className="ms-2">{rate}</span>
+                        <span className="ms-2">{user.rate}</span>
                     </div>
                 </div>
             </div>
@@ -47,9 +53,7 @@ const UserCard = ({ name, profession, rate }) => {
 };
 
 UserCard.propTypes = {
-    name: PropTypes.string,
-    profession: PropTypes.object,
-    rate: PropTypes.number,
+    user: PropTypes.object,
 };
 
 export default UserCard;

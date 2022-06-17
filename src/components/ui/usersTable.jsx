@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import Profession from "./profession";
 
 const UsersTable = (props) => {
-    const { users, onSort, selectedSort, onBookmarkToggle, onDelete } = props;
+    const { users, onSort, selectedSort, onBookmarkToggle } = props;
 
     const columns = {
         name: {
@@ -44,17 +44,6 @@ const UsersTable = (props) => {
                 />
             ),
         },
-        delete: {
-            component: (user) => (
-                <button
-                    className="btn btn-sm btn-danger"
-                    onClick={() => onDelete(user._id)}
-                    // disabled={props.bookmark}
-                >
-                    delete
-                </button>
-            ),
-        },
     };
 
     return (
@@ -72,7 +61,6 @@ UsersTable.propTypes = {
     onSort: PropTypes.func.isRequired,
     selectedSort: PropTypes.object.isRequired,
     onBookmarkToggle: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
 };
 
 export default UsersTable;

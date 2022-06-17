@@ -10,7 +10,7 @@ const QualitiesCard = ({ qualities }) => {
                     <span>Qualities</span>
                 </h5>
                 <p className="card-text">
-                    <Qualities qualities={qualities} />
+                    <Qualities ids={qualities} />
                 </p>
             </div>
         </div>
@@ -18,7 +18,7 @@ const QualitiesCard = ({ qualities }) => {
 };
 
 QualitiesCard.propTypes = {
-    qualities: PropTypes.arrayOf(PropTypes.object).isRequired,
+    qualities: PropTypes.array.isRequired,
 };
 
 export default QualitiesCard;
