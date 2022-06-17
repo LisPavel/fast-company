@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
 
-import api from "../../../api";
-
 import SearchStatus from "../../ui/searchStatus";
 import Pagination from "../../common/pagination";
 import GroupList from "../../common/groupList";
@@ -11,6 +9,7 @@ import SearchField from "../../ui/searchField";
 
 import { paginate } from "../../../utils/paginate";
 import { useUsers } from "../../../hooks/useUsers";
+import { useProfessions } from "../../../hooks/useProfessions";
 
 const UsersListPage = () => {
     // const { users, ...rest } = props;
@@ -18,17 +17,13 @@ const UsersListPage = () => {
 
     const { users } = useUsers();
 
+    const { professions, isLoading: professionsLoading } = useProfessions();
+
     const [currentPage, setCurrentPage] = useState(1);
     const [filter, setFilter] = useState();
-    const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [searchStr, setSearchStr] = useState("");
     const [sortBy, setSortBy] = useState({ path: "", order: "" });
-
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data));
-        // return () => console.log("unmount");
-    }, []);
 
     useEffect(() => setCurrentPage(1), [selectedProf, searchStr]);
 
@@ -102,7 +97,7 @@ const UsersListPage = () => {
 
     return (
         <div className="d-flex">
-            {professions && (
+            {professions && !professionsLoading && (
                 <div className="d-flex flex-column flex-shrink-0 p-3">
                     <GroupList
                         items={professions}
