@@ -121,6 +121,14 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         history.push("/");
     };
+    const updateUser = async (data) => {
+        try {
+            const { content } = await userService.update(data);
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        }
+    };
 
     async function createUser(data) {
         try {
@@ -134,12 +142,14 @@ export const AuthProvider = ({ children }) => {
 
     function errorCatcher(error) {
         console.log(error);
-        const { message } = error.response.data;
-        setError(message);
+        const { message, error: errorMsg } = error.response.data;
+        setError(message ?? errorMsg);
     }
 
     return (
-        <AuthContext.Provider value={{ signUp, currentUser, signIn, logOut }}>
+        <AuthContext.Provider
+            value={{ signUp, currentUser, signIn, logOut, updateUser }}
+        >
             {!isLoading ? children : "Loading"}
         </AuthContext.Provider>
     );
