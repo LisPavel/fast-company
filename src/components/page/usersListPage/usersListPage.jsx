@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
 
-import api from "../../../api";
-
 import SearchStatus from "../../ui/searchStatus";
 import Pagination from "../../common/pagination";
 import GroupList from "../../common/groupList";
@@ -11,6 +9,8 @@ import SearchField from "../../ui/searchField";
 
 import { paginate } from "../../../utils/paginate";
 import { useUsers } from "../../../hooks/useUsers";
+import { useProfessions } from "../../../hooks/useProfessions";
+import { useAuth } from "../../../hooks/useAuth";
 
 const UsersListPage = () => {
     // const { users, ...rest } = props;
@@ -18,17 +18,14 @@ const UsersListPage = () => {
 
     const { users } = useUsers();
 
+    const { professions, isLoading: professionsLoading } = useProfessions();
+    const { currentUser } = useAuth();
+
     const [currentPage, setCurrentPage] = useState(1);
     const [filter, setFilter] = useState();
-    const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [searchStr, setSearchStr] = useState("");
     const [sortBy, setSortBy] = useState({ path: "", order: "" });
-
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data));
-        return () => console.log("unmount");
-    }, []);
 
     useEffect(() => setCurrentPage(1), [selectedProf, searchStr]);
 
@@ -84,15 +81,20 @@ const UsersListPage = () => {
 
     // if (!users) return "loading...";
 
-    const filterUsers = (user) => {
-        const comparedValue = _.get(user, filter.path);
-        if (filter.exact) return comparedValue === filter.value;
+    const filterUsers = (data) => {
+        const usersFilter = (user) => {
+            const comparedValue = _.get(user, filter.path);
+            if (filter.exact) return comparedValue === filter.value;
 
-        const regExp = new RegExp(filter.value, "gi");
-        return regExp.test(comparedValue);
+            const regExp = new RegExp(filter.value, "gi");
+            return regExp.test(comparedValue);
+        };
+        const filteredUsers = filter ? data.filter(usersFilter) : data;
+
+        return filteredUsers.filter((u) => u._id !== currentUser._id);
     };
 
-    const filteredUsers = filter ? users.filter(filterUsers) : users;
+    const filteredUsers = filterUsers(users);
 
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
 
@@ -100,20 +102,9 @@ const UsersListPage = () => {
 
     const usersCount = filteredUsers.length;
 
-    const renderUsersTable = () =>
-        usersCount > 0 && (
-            <UsersTable
-                users={usersCrop}
-                onSort={handleSort}
-                selectedSort={sortBy}
-                onDelete={handleUserRemove}
-                onBookmarkToggle={handleUserBookmarkToggle}
-            />
-        );
-
     return (
         <div className="d-flex">
-            {professions && (
+            {professions && !professionsLoading && (
                 <div className="d-flex flex-column flex-shrink-0 p-3">
                     <GroupList
                         items={professions}
@@ -131,7 +122,13 @@ const UsersListPage = () => {
             <div className="d-flex flex-column">
                 <SearchStatus usersAmount={usersCount} />
                 <SearchField onChange={handleSearchChange} value={searchStr} />
-                {renderUsersTable()}
+                <UsersTable
+                    users={usersCrop}
+                    onSort={handleSort}
+                    selectedSort={sortBy}
+                    onDelete={handleUserRemove}
+                    onBookmarkToggle={handleUserBookmarkToggle}
+                />
                 <div className="d-flex justify-content-center">
                     <Pagination
                         itemsCount={usersCount}

@@ -1,48 +1,54 @@
 import React, { useEffect, useState } from "react";
 // import PropTypes from "prop-types";
-// import Qualities from "../../ui/qualities";
-import api from "../../../api";
 import { useParams, useHistory } from "react-router-dom";
 import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import { validator } from "../../../utils/validator";
+import { useProfessions } from "../../../hooks/useProfessions";
+import { useUsers } from "../../../hooks/useUsers";
+import { useQualities } from "../../../hooks/useQualities";
+import { useAuth } from "../../../hooks/useAuth";
 // import _ from "lodash";
 
 const UserEditPage = () => {
     const { id } = useParams();
-    const [user, setUser] = useState({});
-    const [professions, setProfessions] = useState();
-    const [qualities, setQualities] = useState();
-    const [isLoading, setIsLoading] = useState(true);
+    const { getUserById } = useUsers();
+
+    const user = getUserById(id);
+
+    const [data, setData] = useState({
+        ...user,
+        qualities: user.qualities.map((qid) => ({ value: qid, label: "" })),
+    });
+    const { professions, isLoading: professionsLoading } = useProfessions();
+    const {
+        qualities,
+        isLoading: qualitiesLoading,
+        getQuality,
+    } = useQualities();
+    const { updateUser } = useAuth();
     const [errors, setErrors] = useState({});
     const history = useHistory();
 
-    const toUiData = ({ name: label, _id: value, ...other }) => {
-        return { ...other, label, value };
-    };
+    useEffect(() => {
+        !qualitiesLoading &&
+            setData((ps) => ({
+                ...ps,
+                qualities: ps.qualities.map((q) => {
+                    const quality = getQuality(q.value);
+                    return { ...q, label: quality.name };
+                }),
+            }));
+    }, [qualitiesLoading]);
 
-    useEffect(
-        () =>
-            Promise.all([
-                api.users.getById(id),
-                api.professions.fetchAll(),
-                api.qualities.fetchAll(),
-            ])
-                .then(([userData, profs, qualitiesData]) => {
-                    setUser({
-                        ...userData,
-                        profession: userData.profession._id,
-                        qualities: userData.qualities.map(toUiData),
-                    });
-                    setProfessions(Object.values(profs).map(toUiData));
-                    setQualities(Object.values(qualitiesData).map(toUiData));
-                })
-                .finally(() => setIsLoading(false)),
-        []
-    );
-    useEffect(() => console.log(user), [user]);
+    function toUiData({ name: label, _id: value }) {
+        return { label, value };
+    }
+
+    const qualitiesOptions = qualities.map(toUiData);
+    const professionOptions = professions.map(toUiData);
 
     const handleBackClick = () => {
         history.goBack();
@@ -50,11 +56,10 @@ const UserEditPage = () => {
 
     const handleChange = (data) => {
         if (!data) return;
-        setUser((prevState) => ({
+        setData((prevState) => ({
             ...prevState,
             [data.name]: data.value,
         }));
-        // setEmail(ev.target.value);
     };
 
     const validatorCfg = {
@@ -78,108 +83,31 @@ const UserEditPage = () => {
     };
 
     const validate = () => {
-        const errors = validator(user, validatorCfg);
+        const errors = validator(data, validatorCfg);
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
 
     const isValid = Object.keys(errors).length === 0;
 
-    useEffect(() => validate(), [user]);
-
-    const getProfessionById = (id) => {
-        for (const prof of professions) {
-            if (prof.value === id) {
-                return { _id: prof.value, name: prof.label };
-            }
-        }
-    };
-    const getQualities = (elements) => {
-        const qualitiesArray = [];
-        for (const elem of elements) {
-            for (const quality in qualities) {
-                if (elem.value === qualities[quality].value) {
-                    qualitiesArray.push({
-                        _id: qualities[quality].value,
-                        name: qualities[quality].label,
-                        color: qualities[quality].color,
-                    });
-                }
-            }
-        }
-        return qualitiesArray;
-    };
+    useEffect(() => validate(), [data]);
 
     const handleSubmit = (ev) => {
         ev.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        const { profession, qualities } = user;
-        console.log({
-            ...user,
-            profession: getProfessionById(profession),
-            qualities: getQualities(qualities),
-        });
-        api.users
-            .update(id, {
-                ...user,
-                profession: getProfessionById(profession),
-                qualities: getQualities(qualities),
-            })
-            .then(() => history.goBack());
+        const newData = {
+            ...data,
+            qualities: data.qualities.map(({ value }) => value),
+        };
+        updateUser(newData);
     };
 
-    const renderFields = () => {
-        if (isLoading) return <h3> Loading... </h3>;
-        return (
-            <>
-                <TextField
-                    label="Name"
-                    name="name"
-                    value={user.name}
-                    onChange={handleChange}
-                    error={errors.name}
-                />
-                <TextField
-                    label="Email"
-                    name="email"
-                    value={user.email}
-                    onChange={handleChange}
-                    error={errors.email}
-                />
-                <SelectField
-                    label="Profession"
-                    defaultValue="Chose your prof"
-                    error={errors.profession}
-                    name="profession"
-                    onChange={handleChange}
-                    options={professions}
-                    value={user.profession}
-                />
-                <RadioField
-                    name="sex"
-                    error={errors.sex}
-                    onChange={handleChange}
-                    options={[
-                        { name: "Male", value: "male" },
-                        { name: "Female", value: "female" },
-                        { name: "Other", value: "other" },
-                    ]}
-                    value={user.sex}
-                    label="Select gender"
-                />
-                <MultiSelectField
-                    name="qualities"
-                    options={qualities}
-                    onChange={handleChange}
-                    value={user.qualities}
-                    label="Qualities"
-                    defaultValue={user.qualities}
-                    error={errors.qualities}
-                />
-            </>
-        );
+    const isLoading = () => {
+        return professionsLoading || qualitiesLoading;
     };
+
+    if (isLoading()) return <h3> Loading... </h3>;
 
     return (
         <form
@@ -203,7 +131,52 @@ const UserEditPage = () => {
                     </button>
                 </div>
             </div>
-            <div className="card-body">{renderFields()}</div>
+            <div className="card-body">
+                <TextField
+                    label="Name"
+                    name="name"
+                    value={data.name || ""}
+                    onChange={handleChange}
+                    error={errors.name}
+                />
+                <TextField
+                    label="Email"
+                    name="email"
+                    value={data.email || ""}
+                    onChange={handleChange}
+                    error={errors.email}
+                />
+                <SelectField
+                    label="Profession"
+                    defaultValue="Chose your prof"
+                    error={errors.profession}
+                    name="profession"
+                    onChange={handleChange}
+                    options={professionOptions}
+                    value={data.profession}
+                />
+                <RadioField
+                    name="sex"
+                    error={errors.sex}
+                    onChange={handleChange}
+                    options={[
+                        { name: "Male", value: "male" },
+                        { name: "Female", value: "female" },
+                        { name: "Other", value: "other" },
+                    ]}
+                    value={data.sex}
+                    label="Select gender"
+                />
+                <MultiSelectField
+                    name="qualities"
+                    options={qualitiesOptions}
+                    onChange={handleChange}
+                    value={data.qualities}
+                    label="Qualities"
+                    defaultValue={data.qualities}
+                    error={errors.qualities}
+                />
+            </div>
         </form>
     );
 };

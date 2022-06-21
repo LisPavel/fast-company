@@ -2,16 +2,46 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 import configFile from "../config.json";
+import { httpAuth } from "../hooks/useAuth";
+import localStorageService from "./localStorageService";
 
 const http = axios.create({ baseURL: configFile.apiEndPoint });
 
 http.interceptors.request.use(
-    (config) => {
+    async (config) => {
         if (configFile.isFireBase) {
             const isSlashEnd = /\/$/gi.test(config.url);
             config.url = `${
                 isSlashEnd ? config.url.slice(0, -1) : config.url
             }.json`;
+            const expiresDate = localStorageService.getExpiresDate();
+            const refreshToken = localStorageService.getRefreshToken();
+            if (refreshToken && expiresDate < Date.now()) {
+                try {
+                    const { data } = await httpAuth.post(
+                        `token?key=${process.env.REACT_APP_FIREBASE_KEY}`,
+                        {
+                            grant_type: "refresh_token",
+                            refresh_token: refreshToken,
+                        }
+                    );
+                    console.log("refresh", data);
+                    localStorageService.setTokens({
+                        refreshToken: data.refresh_token,
+                        idToken: data.id_token,
+                        localId: data.user_id,
+                        expiresIn: data.expiresIn,
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            const accessToken = localStorageService.getAccessToken();
+
+            if (accessToken) {
+                config.params = { ...config.params, auth: accessToken };
+            }
         }
         return config;
     },
@@ -19,7 +49,7 @@ http.interceptors.request.use(
 );
 
 function transformData(data) {
-    return data ? Object.keys(data).map((k) => data[k]) : [];
+    return data && !data._id ? Object.keys(data).map((k) => data[k]) : data;
 }
 
 http.interceptors.response.use(
@@ -47,6 +77,7 @@ const httpService = {
     put: http.put,
     post: http.post,
     delete: http.delete,
+    patch: http.patch,
 };
 
 export default httpService;

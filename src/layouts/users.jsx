@@ -4,6 +4,7 @@ import UserEditPage from "../components/page/userEditPage";
 
 import UserPage from "../components/page/userPage";
 import UsersListPage from "../components/page/usersListPage";
+import UserEditRoute from "../components/routes/userEditRoute";
 import UserProvider from "../hooks/useUsers";
 
 const Users = () => {
@@ -15,9 +16,13 @@ const Users = () => {
     return (
         <UserProvider>
             <Switch>
-                {pages.map((pageCfg) => (
-                    <Route {...pageCfg} key={pageCfg.path} />
-                ))}
+                {pages.map((pageCfg) =>
+                    pageCfg.path !== "/users/:id/edit" ? (
+                        <Route {...pageCfg} key={pageCfg.path} />
+                    ) : (
+                        <UserEditRoute {...pageCfg} key={pageCfg.path} />
+                    )
+                )}
             </Switch>
         </UserProvider>
     );

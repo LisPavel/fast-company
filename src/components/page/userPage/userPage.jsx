@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, useHistory } from "react-router-dom";
 
-import userApi from "../../../api/fake.api/user.api";
+// import userApi from "../../../api/fake.api/user.api";
 import UserCard from "../../ui/userCard";
 import QualitiesCard from "../../ui/qualitiesCard";
 import MeetingsCard from "../../ui/meetingsCard";
 import Comments from "../../ui/comments";
+import { useUsers } from "../../../hooks/useUsers";
+import { CommentsProvider } from "../../../hooks/useComments";
 // import _ from "lodash";
 
 const UserPage = () => {
     const { id } = useParams();
-    const [user, setUser] = useState();
+    const { getUserById } = useUsers();
+
+    const user = getUserById(id);
+    // const [user, setUser] = useState();
     const history = useHistory();
-    useEffect(
-        () =>
-            userApi.getById(id).then((result) => {
-                setUser(result);
-            }),
-        []
-    );
 
     const handleBackClick = () => {
-        history.goBack();
+        history.push("/users");
     };
 
     const renderUser = (data) => {
@@ -36,14 +34,16 @@ const UserPage = () => {
                 </button>
                 <div className="row gutters-sm">
                     <div className="col-md-4 mb-3">
-                        <UserCard {...user} />
-                        <QualitiesCard qualities={user.qualities} />
+                        <UserCard user={data} />
+                        <QualitiesCard qualities={data.qualities} />
                         <MeetingsCard
-                            completedMeetings={user.completedMeetings}
+                            completedMeetings={data.completedMeetings}
                         />
                     </div>
                     <div className="col-md-8">
-                        <Comments />
+                        <CommentsProvider>
+                            <Comments />
+                        </CommentsProvider>
                     </div>
                 </div>
             </div>

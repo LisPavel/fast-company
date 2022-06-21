@@ -3,13 +3,19 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import userService from "../services/userService";
 import { toast } from "react-toastify";
-import { setTokens } from "../services/localStorageService";
+import localStorageService, {
+    setTokens,
+} from "../services/localStorageService";
+import { useHistory } from "react-router-dom";
 // import userService from "../services/userService";
 // import { toast } from "react-toastify";
 
 const AuthContext = React.createContext();
-const httpAuth = axios.create({
+export const httpAuth = axios.create({
     baseURL: "https://identitytoolkit.googleapis.com/v1/",
+    params: {
+        key: process.env.REACT_APP_FIREBASE_KEY,
+    },
 });
 
 export const useAuth = () => {
@@ -17,8 +23,26 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-    const [currentUser, setUser] = useState({});
+    const [currentUser, setUser] = useState();
     const [error, setError] = useState(null);
+    const [isLoading, setLoading] = useState(true);
+    const history = useHistory();
+
+    const getUserData = async () => {
+        try {
+            const { content } = await userService.getCurrentUser();
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!localStorageService.getAccessToken()) return setLoading(false);
+        getUserData();
+    }, []);
 
     useEffect(() => {
         if (error) {
@@ -27,17 +51,27 @@ export const AuthProvider = ({ children }) => {
         }
     }, [error]);
 
+    const randomInt = (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    };
+
     const signUp = async ({ email, password, ...rest }) => {
-        const url = `accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const url = "accounts:signUp";
 
         try {
             const { data } = await httpAuth.post(url, {
                 email,
                 password,
-                returnSecureKey: true,
+                returnSecureToken: true,
             });
             setTokens(data);
-            await createUser({ ...rest, email, _id: data.localId });
+            await createUser({
+                ...rest,
+                email,
+                _id: data.localId,
+                rate: randomInt(1, 5),
+                completedMeetings: randomInt(0, 200),
+            });
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -52,14 +86,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
     const signIn = async ({ email, password }) => {
-        const url = `accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const url = "accounts:signInWithPassword";
         try {
             const { data } = await httpAuth.post(url, {
                 email,
                 password,
-                returnSecureKey: true,
+                returnSecureToken: true,
             });
             setTokens(data);
+            await getUserData();
         } catch (error) {
             errorCatcher(error);
 
@@ -81,12 +116,25 @@ export const AuthProvider = ({ children }) => {
             }
         }
     };
+    const logOut = () => {
+        localStorageService.removeAuthData();
+        setUser(null);
+        history.push("/");
+    };
+    const updateUser = async (data) => {
+        try {
+            const { content } = await userService.update(data);
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        }
+    };
 
     async function createUser(data) {
         try {
             const { content } = await userService.create(data);
             setUser(content);
-            // console.log(content);
+            console.log(content);
         } catch (error) {
             errorCatcher(error);
         }
@@ -94,13 +142,15 @@ export const AuthProvider = ({ children }) => {
 
     function errorCatcher(error) {
         console.log(error);
-        const { message } = error.response.data;
-        setError(message);
+        const { message, error: errorMsg } = error.response.data;
+        setError(message ?? errorMsg);
     }
 
     return (
-        <AuthContext.Provider value={{ signUp, currentUser, signIn }}>
-            {children}
+        <AuthContext.Provider
+            value={{ signUp, currentUser, signIn, logOut, updateUser }}
+        >
+            {!isLoading ? children : "Loading"}
         </AuthContext.Provider>
     );
 };

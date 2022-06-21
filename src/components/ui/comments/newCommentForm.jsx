@@ -1,25 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import SelectField from "../../common/form/selectField";
 import TextAreaField from "../../common/form/textAreaField";
-import api from "../../../api";
 import { validator } from "../../../utils/validator";
-import { useParams } from "react-router-dom";
 
-const NewCommentForm = ({ users, onAddComment }) => {
-    const { id } = useParams();
-    const initialData = { userId: "", content: "", pageId: id };
-
-    const [comment, setComment] = useState(initialData);
+const NewCommentForm = ({ onAddComment }) => {
+    const [data, setData] = useState({});
     const [errors, setErrors] = useState({});
 
-    const usersOptions = users.map((user) => ({
-        value: user._id,
-        label: user.name,
-    }));
-
     const validatorCfg = {
-        userId: { isRequired: { message: "User is required" } },
         content: {
             isRequired: { message: "Post is required" },
             min: { message: "Post required at list 5 symbols", value: 5 },
@@ -36,32 +24,30 @@ const NewCommentForm = ({ users, onAddComment }) => {
     );
 
     useEffect(() => {
-        validate(comment);
-    }, [comment]);
+        validate(data);
+    }, [data]);
 
     const isValid = Object.keys(errors).length === 0;
 
     const handleChange = useCallback(
         (data) => {
             if (!data) return;
-            setComment((prevState) => ({
+            setData((prevState) => ({
                 ...prevState,
                 [data.name]: data.value,
             }));
         },
-        [setComment]
+        [setData]
     );
 
     const handleSubmit = useCallback(
         (data) => {
             const isValid = validate(data);
             if (!isValid) return;
-            api.comments.add(data).then((newComment) => {
-                onAddComment(newComment);
-                setComment(initialData);
-            });
+            onAddComment(data);
+            setData({});
         },
-        [setComment]
+        [setData]
     );
 
     return (
@@ -70,26 +56,15 @@ const NewCommentForm = ({ users, onAddComment }) => {
                 <form
                     onSubmit={(ev) => {
                         ev.preventDefault();
-                        handleSubmit(comment);
+                        handleSubmit(data);
                     }}
                 >
                     <h2>New comment</h2>
                     <div className="mb-4">
-                        <SelectField
-                            options={usersOptions}
-                            defaultValue="Выберите пользователя"
-                            name="userId"
-                            label="User"
-                            onChange={handleChange}
-                            value={comment.userId}
-                            error={errors.userId}
-                        />
-                    </div>
-                    <div className="mb-4">
                         <TextAreaField
                             label="Сообщение"
                             name="content"
-                            value={comment.content}
+                            value={data.content || ""}
                             onChange={handleChange}
                             error={errors.content}
                             rows="3"
@@ -107,7 +82,6 @@ const NewCommentForm = ({ users, onAddComment }) => {
 };
 
 NewCommentForm.propTypes = {
-    users: PropTypes.array.isRequired,
     onAddComment: PropTypes.func.isRequired,
 };
 

@@ -13,6 +13,10 @@ const Bookmark = ({ bookmarked, ...rest }) => {
     );
 };
 
+Bookmark.defaultProps = {
+    bookmarked: false,
+};
+
 Bookmark.propTypes = {
     bookmarked: PropTypes.bool.isRequired,
 };
