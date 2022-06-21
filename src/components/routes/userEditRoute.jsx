@@ -1,23 +1,21 @@
 import React from "react";
-import { Redirect, Route, useLocation } from "react-router-dom";
+import { Redirect, Route, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import { useAuth } from "../../hooks/useAuth";
 
 const UserEditRoute = ({ component: Component, children, ...rest }) => {
     const { currentUser } = useAuth();
-    const editPath = `/users/${currentUser._id}/edit`;
-    const location = useLocation();
+    const { id } = useParams();
     return (
         <Route
             {...rest}
             render={(props) => {
-                if (editPath !== location.pathname) {
+                if (id !== currentUser._id) {
                     return (
                         <Redirect
                             to={{
-                                pathname: editPath,
-                                // state: { from: props.location },
+                                pathname: `/users/${currentUser._id}/edit`,
                             }}
                         />
                     );

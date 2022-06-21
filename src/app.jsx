@@ -17,7 +17,7 @@ const App = () => {
         "/": { component: Main, exact: true, path: "/", name: "Main" },
         "/users": {
             component: Users,
-            path: "/users",
+            path: "/users/:id?",
             name: "Users",
             onLoggedIn: true,
             protected: true,

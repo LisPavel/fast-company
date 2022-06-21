@@ -9,7 +9,7 @@ import UserProvider from "../hooks/useUsers";
 
 const Users = () => {
     const pages = [
-        { path: "/users/:id/edit", component: UserEditPage },
+        { path: "/users/:id/edit", component: UserEditPage, id: "editPage" },
         { path: "/users/:id", component: UserPage },
         { path: "/users", component: UsersListPage },
     ];
@@ -17,7 +17,7 @@ const Users = () => {
         <UserProvider>
             <Switch>
                 {pages.map((pageCfg) =>
-                    pageCfg.path !== "/users/:id/edit" ? (
+                    pageCfg.id !== "editPage" ? (
                         <Route {...pageCfg} key={pageCfg.path} />
                     ) : (
                         <UserEditRoute {...pageCfg} key={pageCfg.path} />

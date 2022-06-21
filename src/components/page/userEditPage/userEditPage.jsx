@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 // import PropTypes from "prop-types";
-import { /* useParams, */ useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
@@ -11,8 +11,9 @@ import { useQualities } from "../../../hooks/useQualities";
 import { useAuth } from "../../../hooks/useAuth";
 
 const UserEditPage = () => {
-    const [isLoading, setLoading] = useState(true);
     const { currentUser } = useAuth();
+
+    const [isLoading, setLoading] = useState(true);
 
     const [data, setData] = useState();
     const { professions, isLoading: professionsLoading } = useProfessions();
@@ -89,7 +90,7 @@ const UserEditPage = () => {
 
     useEffect(() => data && validate(), [data]);
 
-    const handleSubmit = (ev) => {
+    const handleSubmit = async (ev) => {
         ev.preventDefault();
         const isValid = validate();
         if (!isValid) return;
@@ -97,7 +98,8 @@ const UserEditPage = () => {
             ...data,
             qualities: data.qualities.map(({ value }) => value),
         };
-        updateUser(newData);
+        await updateUser(newData);
+        history.push(`/users/${currentUser._id}`);
     };
 
     if (isLoading) return <h3> Loading... </h3>;
