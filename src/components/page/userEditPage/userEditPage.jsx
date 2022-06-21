@@ -1,27 +1,20 @@
 import React, { useEffect, useState } from "react";
 // import PropTypes from "prop-types";
-import { useParams, useHistory } from "react-router-dom";
+import { /* useParams, */ useHistory } from "react-router-dom";
 import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import { validator } from "../../../utils/validator";
 import { useProfessions } from "../../../hooks/useProfessions";
-import { useUsers } from "../../../hooks/useUsers";
 import { useQualities } from "../../../hooks/useQualities";
 import { useAuth } from "../../../hooks/useAuth";
-// import _ from "lodash";
 
 const UserEditPage = () => {
-    const { id } = useParams();
-    const { getUserById } = useUsers();
+    const [isLoading, setLoading] = useState(true);
+    const { currentUser } = useAuth();
 
-    const user = getUserById(id);
-
-    const [data, setData] = useState({
-        ...user,
-        qualities: user.qualities.map((qid) => ({ value: qid, label: "" })),
-    });
+    const [data, setData] = useState();
     const { professions, isLoading: professionsLoading } = useProfessions();
     const {
         qualities,
@@ -33,15 +26,19 @@ const UserEditPage = () => {
     const history = useHistory();
 
     useEffect(() => {
-        !qualitiesLoading &&
-            setData((ps) => ({
-                ...ps,
-                qualities: ps.qualities.map((q) => {
-                    const quality = getQuality(q.value);
-                    return { ...q, label: quality.name };
-                }),
-            }));
-    }, [qualitiesLoading]);
+        if (!qualitiesLoading && !professionsLoading && currentUser && !data) {
+            setData({
+                ...currentUser,
+                qualities: currentUser.qualities
+                    .map((qid) => getQuality(qid))
+                    .map(toUiData),
+            });
+        }
+    }, [qualitiesLoading, professionsLoading, currentUser, data]);
+
+    useEffect(() => {
+        if (data && isLoading) setLoading(false);
+    }, [data, isLoading]);
 
     function toUiData({ name: label, _id: value }) {
         return { label, value };
@@ -90,7 +87,7 @@ const UserEditPage = () => {
 
     const isValid = Object.keys(errors).length === 0;
 
-    useEffect(() => validate(), [data]);
+    useEffect(() => data && validate(), [data]);
 
     const handleSubmit = (ev) => {
         ev.preventDefault();
@@ -103,11 +100,7 @@ const UserEditPage = () => {
         updateUser(newData);
     };
 
-    const isLoading = () => {
-        return professionsLoading || qualitiesLoading;
-    };
-
-    if (isLoading()) return <h3> Loading... </h3>;
+    if (isLoading) return <h3> Loading... </h3>;
 
     return (
         <form
