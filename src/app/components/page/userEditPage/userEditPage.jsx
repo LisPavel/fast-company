@@ -7,8 +7,12 @@ import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import { validator } from "../../../utils/validator";
 import { useProfessions } from "../../../hooks/useProfessions";
-import { useQualities } from "../../../hooks/useQualities";
 import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import {
+    getQualities,
+    getQualitiesLoadingStatus,
+} from "../../../store/qualities";
 
 const UserEditPage = () => {
     const { currentUser } = useAuth();
@@ -17,22 +21,26 @@ const UserEditPage = () => {
 
     const [data, setData] = useState();
     const { professions, isLoading: professionsLoading } = useProfessions();
-    const {
-        qualities,
-        isLoading: qualitiesLoading,
-        getQuality,
-    } = useQualities();
+    const qualities = useSelector(getQualities());
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const { updateUser } = useAuth();
     const [errors, setErrors] = useState({});
     const history = useHistory();
+
+    const qualitiesOptions = qualities.map(toUiData);
+    const professionOptions = professions.map(toUiData);
+
+    const transformQualitiesData = (qIds) => {
+        return qualitiesOptions.filter((qOption) =>
+            qIds.includes(qOption.value)
+        );
+    };
 
     useEffect(() => {
         if (!qualitiesLoading && !professionsLoading && currentUser && !data) {
             setData({
                 ...currentUser,
-                qualities: currentUser.qualities
-                    .map((qid) => getQuality(qid))
-                    .map(toUiData),
+                qualities: transformQualitiesData(currentUser.qualities),
             });
         }
     }, [qualitiesLoading, professionsLoading, currentUser, data]);
@@ -44,9 +52,6 @@ const UserEditPage = () => {
     function toUiData({ name: label, _id: value }) {
         return { label, value };
     }
-
-    const qualitiesOptions = qualities.map(toUiData);
-    const professionOptions = professions.map(toUiData);
 
     const handleBackClick = () => {
         history.goBack();
