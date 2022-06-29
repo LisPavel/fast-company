@@ -9,8 +9,13 @@ import SearchField from "../../ui/searchField";
 
 import { paginate } from "../../../utils/paginate";
 import { useUsers } from "../../../hooks/useUsers";
-import { useProfessions } from "../../../hooks/useProfessions";
 import { useAuth } from "../../../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus,
+    loadProfessionsList,
+} from "../../../store/professions";
 
 const UsersListPage = () => {
     // const { users, ...rest } = props;
@@ -18,7 +23,10 @@ const UsersListPage = () => {
 
     const { users } = useUsers();
 
-    const { professions, isLoading: professionsLoading } = useProfessions();
+    const professions = useSelector(getProfessions());
+    const professionsLoading = useSelector(getProfessionsLoadingStatus());
+    const dispatch = useDispatch();
+
     const { currentUser } = useAuth();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,13 +36,7 @@ const UsersListPage = () => {
     const [sortBy, setSortBy] = useState({ path: "", order: "" });
 
     useEffect(() => setCurrentPage(1), [selectedProf, searchStr]);
-
-    const handleUserRemove = (userId) => {
-        // setUsers((prevState) =>
-        //     prevState.filter((user) => user._id !== userId)
-        // );
-        console.log("delete user with id ", userId);
-    };
+    useEffect(() => dispatch(loadProfessionsList()), []);
 
     const handleUserBookmarkToggle = (userId) => {
         // setUsers((prevState) =>
@@ -49,7 +51,7 @@ const UsersListPage = () => {
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
         if (item) {
-            setFilter({ value: item._id, exact: true, path: "profession._id" });
+            setFilter({ value: item._id, exact: true, path: "profession" });
             setSearchStr("");
         } else {
             setFilter(undefined);
@@ -126,7 +128,6 @@ const UsersListPage = () => {
                     users={usersCrop}
                     onSort={handleSort}
                     selectedSort={sortBy}
-                    onDelete={handleUserRemove}
                     onBookmarkToggle={handleUserBookmarkToggle}
                 />
                 <div className="d-flex justify-content-center">

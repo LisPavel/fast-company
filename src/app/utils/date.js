@@ -47,4 +47,8 @@ const formatDate = (dateStr) => {
     return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
 };
 
+export const isOutdated = (date, minutes = 1) => {
+    return Date.now() - date > minutes * 60 * 1000;
+};
+
 export { convertToUnit, formatDate };

@@ -6,17 +6,18 @@ import Main from "./layouts/main";
 import LogIn from "./layouts/login";
 import NavBar from "./components/ui/navBar";
 import { ToastContainer } from "react-toastify";
-import { ProfessionProvider } from "./hooks/useProfessions";
 import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./components/common/protectedRoute";
 import LogOut from "./layouts/logOut";
 import "react-toastify/dist/ReactToastify.css";
 import { loadQualitiesList } from "./store/qualities";
+import { loadProfessionsList } from "./store/professions";
 
 const App = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(loadQualitiesList());
+        dispatch(loadProfessionsList());
     }, []);
     const layouts = {
         "/": { component: Main, exact: true, path: "/", name: "Main" },
@@ -42,18 +43,16 @@ const App = () => {
         <>
             <AuthProvider>
                 <NavBar items={layouts} />
-                <ProfessionProvider>
-                    <Switch>
-                        {Object.keys(layouts).map((path) =>
-                            layouts[path].protected ? (
-                                <ProtectedRoute {...layouts[path]} key={path} />
-                            ) : (
-                                <Route {...layouts[path]} key={path} />
-                            )
-                        )}
-                        <Redirect to="/" />
-                    </Switch>
-                </ProfessionProvider>
+                <Switch>
+                    {Object.keys(layouts).map((path) =>
+                        layouts[path].protected ? (
+                            <ProtectedRoute {...layouts[path]} key={path} />
+                        ) : (
+                            <Route {...layouts[path]} key={path} />
+                        )
+                    )}
+                    <Redirect to="/" />
+                </Switch>
             </AuthProvider>
             <ToastContainer />
         </>

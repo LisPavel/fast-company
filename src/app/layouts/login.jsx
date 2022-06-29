@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import LoginForm from "../components/ui/loginForm";
 import RegisterForm from "../components/ui/registerForm";
+import { getProfessionsLoadingStatus } from "../store/professions";
+import { getQualitiesLoadingStatus } from "../store/qualities";
 
 const LogIn = () => {
     const { type } = useParams();
@@ -13,6 +16,13 @@ const LogIn = () => {
             prevState === "register" ? "login" : "register"
         );
     };
+
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
+    const professionsLoading = useSelector(getProfessionsLoadingStatus());
+    if (formType === "register" && (qualitiesLoading || professionsLoading)) {
+        return "Loading...";
+    }
+
     const renderForm = () => {
         return formType === "register" ? (
             <>

@@ -2,14 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import CardWrapper from "../common/CardWrapper";
 import { Link, useLocation } from "react-router-dom";
-import { useProfessions } from "../../hooks/useProfessions";
 import { useAuth } from "../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getProfessionById } from "../../store/professions";
 
 const UserCard = ({ user }) => {
     const location = useLocation();
-    const { getProfession } = useProfessions();
-
-    const profession = getProfession(user.profession);
+    const profession = useSelector(getProfessionById(user.profession));
 
     const { currentUser } = useAuth();
 
