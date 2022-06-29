@@ -8,7 +8,6 @@ import UsersTable from "../../ui/usersTable";
 import SearchField from "../../ui/searchField";
 
 import { paginate } from "../../../utils/paginate";
-import { useUsers } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,12 +15,13 @@ import {
     getProfessionsLoadingStatus,
     loadProfessionsList,
 } from "../../../store/professions";
+import { getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
     // const { users, ...rest } = props;
     const pageSize = 8;
 
-    const { users } = useUsers();
+    const users = useSelector(getUsersList());
 
     const professions = useSelector(getProfessions());
     const professionsLoading = useSelector(getProfessionsLoadingStatus());

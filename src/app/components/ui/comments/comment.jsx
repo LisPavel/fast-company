@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 
 // import api from "../../../api";
 import { formatDate } from "../../../utils/date";
-import { useUsers } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getUserById } from "../../../store/users";
 
 const Comment = ({ userId, content, createdAt, onDelete, _id }) => {
-    const { getUserById } = useUsers();
     const { currentUser } = useAuth();
-    const user = getUserById(userId);
+    const user = useSelector(getUserById(userId));
 
     const handleClick = () => {
         onDelete(_id);

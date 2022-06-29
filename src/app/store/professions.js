@@ -54,6 +54,7 @@ export const getProfessionsLoadingStatus = () => (state) => {
     return state.professions.isLoading;
 };
 export const getProfessionById = (id) => (state) => {
+    if (state.professions.entities == null) return null;
     return state.professions.entities.find((p) => p._id === id);
 };
 

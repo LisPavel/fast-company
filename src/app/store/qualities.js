@@ -69,6 +69,7 @@ export const getQualitiesByIds = (ids) => (state) => {
     return result;
 };
 export const getQualityById = (id) => (state) => {
+    if (state.qualities.entities == null) return;
     return state.qualities.entities.find((q) => q._id === id);
 };
 

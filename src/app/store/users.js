@@ -38,13 +38,14 @@ export const loadUsersList = () => async (dispatch) => {
     }
 };
 
-export const getUsers = () => (state) => {
+export const getUsersList = () => (state) => {
     return state.users.entities;
 };
 export const getUsersLoadingStatus = () => (state) => {
     return state.users.isLoading;
 };
 export const getUserById = (id) => (state) => {
+    if (state.users.entities == null) return null;
     return state.users.entities.find((u) => u._id === id);
 };
 
