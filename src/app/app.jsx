@@ -12,10 +12,12 @@ import LogOut from "./layouts/logOut";
 import "react-toastify/dist/ReactToastify.css";
 import { loadQualitiesList } from "./store/qualities";
 import { loadProfessionsList } from "./store/professions";
+import { loadUsersList } from "./store/users";
 
 const App = () => {
     const dispatch = useDispatch();
     useEffect(() => {
+        dispatch(loadUsersList());
         dispatch(loadQualitiesList());
         dispatch(loadProfessionsList());
     }, []);
