@@ -6,13 +6,15 @@ import { validator } from "../../utils/validator";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
-import { useAuth } from "../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+// import { useAuth } from "../../hooks/useAuth";
+// import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { getQualities } from "../../store/qualities";
 import { getProfessions } from "../../store/professions";
+import { signUp } from "../../store/users";
 
 const RegisterForm = () => {
+    const dispatch = useDispatch();
     const [data, setData] = useState({
         email: "",
         password: "",
@@ -24,8 +26,8 @@ const RegisterForm = () => {
         image: createImage(),
     });
     const [errors, setErrors] = useState({});
-    const history = useHistory();
-    const { signUp } = useAuth();
+    // const history = useHistory();
+    // const { signUp } = useAuth();
 
     const qualities = useSelector(getQualities());
     const professions = useSelector(getProfessions());
@@ -96,7 +98,7 @@ const RegisterForm = () => {
         }));
     }
 
-    const handleSubmit = async (ev) => {
+    const handleSubmit = (ev) => {
         ev.preventDefault();
         const isValid = validate();
         if (!isValid) return;
@@ -105,12 +107,7 @@ const RegisterForm = () => {
             qualities: data.qualities.map(({ value }) => value),
         };
         console.log(newData);
-        try {
-            await signUp(newData);
-            history.push("/");
-        } catch (error) {
-            setErrors(error);
-        }
+        dispatch(signUp(newData));
     };
 
     function createImage() {
