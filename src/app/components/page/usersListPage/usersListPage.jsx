@@ -8,14 +8,14 @@ import UsersTable from "../../ui/usersTable";
 import SearchField from "../../ui/searchField";
 
 import { paginate } from "../../../utils/paginate";
-import { useAuth } from "../../../hooks/useAuth";
+// import { useAuth } from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getProfessions,
     getProfessionsLoadingStatus,
     loadProfessionsList,
 } from "../../../store/professions";
-import { getUsersList } from "../../../store/users";
+import { getCurrentUserId, getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
     // const { users, ...rest } = props;
@@ -27,7 +27,8 @@ const UsersListPage = () => {
     const professionsLoading = useSelector(getProfessionsLoadingStatus());
     const dispatch = useDispatch();
 
-    const { currentUser } = useAuth();
+    // const { currentUser } = useAuth();
+    const currentUserId = useSelector(getCurrentUserId());
 
     const [currentPage, setCurrentPage] = useState(1);
     const [filter, setFilter] = useState();
@@ -93,7 +94,7 @@ const UsersListPage = () => {
         };
         const filteredUsers = filter ? data.filter(usersFilter) : data;
 
-        return filteredUsers.filter((u) => u._id !== currentUser._id);
+        return filteredUsers.filter((u) => u._id !== currentUserId);
     };
 
     const filteredUsers = filterUsers(users);

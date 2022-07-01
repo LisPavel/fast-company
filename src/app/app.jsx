@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Users from "./layouts/users";
 import Main from "./layouts/main";
 import LogIn from "./layouts/login";
@@ -12,12 +12,13 @@ import LogOut from "./layouts/logOut";
 import "react-toastify/dist/ReactToastify.css";
 import { loadQualitiesList } from "./store/qualities";
 import { loadProfessionsList } from "./store/professions";
-import { loadUsersList } from "./store/users";
+import { getIsLoggedIn, loadUsersList } from "./store/users";
 
 const App = () => {
     const dispatch = useDispatch();
+    const isLoggedIng = useSelector(getIsLoggedIn());
     useEffect(() => {
-        dispatch(loadUsersList());
+        if (isLoggedIng) dispatch(loadUsersList());
         dispatch(loadQualitiesList());
         dispatch(loadProfessionsList());
     }, []);
