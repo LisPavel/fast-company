@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import authService from "../services/authService";
 import localStorageService from "../services/localStorageService";
@@ -5,16 +6,27 @@ import userService from "../services/userService";
 import history from "../utils/history";
 import { randomInt } from "../utils/number";
 
+const initialState = localStorageService.getAccessToken()
+    ? {
+          entities: null,
+          error: null,
+          isLoading: true,
+          auth: { userId: localStorageService.getUserId() },
+          isLoggedIn: true,
+          dataLoaded: false,
+      }
+    : {
+          entities: null,
+          error: null,
+          isLoading: false,
+          auth: null,
+          isLoggedIn: false,
+          dataLoaded: false,
+      };
+
 const usersSlice = createSlice({
     name: "users",
-    initialState: {
-        entities: null,
-        error: null,
-        isLoading: true,
-        auth: null,
-        isLoggedIn: false,
-        dataLoaded: false,
-    },
+    initialState,
     reducers: {
         usersRequested(state) {
             state.isLoading = true;
@@ -37,7 +49,7 @@ const usersSlice = createSlice({
             state.error = action.payload;
         },
         userCreated(state, action) {
-            state.entities.push(action.payload);
+            state.entities?.push(action.payload);
         },
     },
 });

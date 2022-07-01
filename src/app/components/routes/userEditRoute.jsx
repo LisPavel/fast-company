@@ -2,20 +2,21 @@ import React from "react";
 import { Redirect, Route, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getCurrentUserId } from "../../store/users";
 
 const UserEditRoute = ({ component: Component, children, ...rest }) => {
-    const { currentUser } = useAuth();
+    const currentUserId = useSelector(getCurrentUserId());
     const { id } = useParams();
     return (
         <Route
             {...rest}
             render={(props) => {
-                if (id !== currentUser._id) {
+                if (id !== currentUserId) {
                     return (
                         <Redirect
                             to={{
-                                pathname: `/users/${currentUser._id}/edit`,
+                                pathname: `/users/${currentUserId}/edit`,
                             }}
                         />
                     );
