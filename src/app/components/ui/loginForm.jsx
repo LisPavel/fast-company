@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { logIn } from "../../store/users.js";
-// import { useAuth } from "../../hooks/useAuth.jsx";
 import { validator } from "../../utils/validator.js";
 import CheckBoxField from "../common/form/checkBoxField.jsx";
 import TextField from "../common/form/textField";
@@ -17,8 +16,6 @@ const LoginForm = () => {
     const history = useHistory();
 
     const dispatch = useDispatch();
-
-    // const { signIn } = useAuth();
 
     const handleChange = (data) => {
         if (!data) return;

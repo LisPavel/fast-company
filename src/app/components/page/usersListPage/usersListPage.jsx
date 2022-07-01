@@ -8,7 +8,6 @@ import UsersTable from "../../ui/usersTable";
 import SearchField from "../../ui/searchField";
 
 import { paginate } from "../../../utils/paginate";
-// import { useAuth } from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getProfessions,
@@ -27,7 +26,6 @@ const UsersListPage = () => {
     const professionsLoading = useSelector(getProfessionsLoadingStatus());
     const dispatch = useDispatch();
 
-    // const { currentUser } = useAuth();
     const currentUserId = useSelector(getCurrentUserId());
 
     const [currentPage, setCurrentPage] = useState(1);

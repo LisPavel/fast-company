@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import TextField from "../common/form/textField";
 import SelectField from "../common/form/selectField";
 import { validator } from "../../utils/validator";
-// import api from "../../api";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
-// import { useAuth } from "../../hooks/useAuth";
-// import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getQualities } from "../../store/qualities";
 import { getProfessions } from "../../store/professions";
@@ -26,8 +23,6 @@ const RegisterForm = () => {
         image: createImage(),
     });
     const [errors, setErrors] = useState({});
-    // const history = useHistory();
-    // const { signUp } = useAuth();
 
     const qualities = useSelector(getQualities());
     const professions = useSelector(getProfessions());
@@ -41,7 +36,6 @@ const RegisterForm = () => {
             ...prevState,
             [data.name]: data.value,
         }));
-        // setEmail(ev.target.value);
     };
 
     const validatorCfg = {

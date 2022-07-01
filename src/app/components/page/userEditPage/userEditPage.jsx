@@ -16,17 +16,17 @@ import {
     getProfessions,
     getProfessionsLoadingStatus,
 } from "../../../store/professions";
+import { getCurrentUserData } from "../../../store/users";
 
 const UserEditPage = () => {
-    const { currentUser } = useAuth();
-
     const [isLoading, setLoading] = useState(true);
-
     const [data, setData] = useState();
+
     const professions = useSelector(getProfessions());
     const professionsLoading = useSelector(getProfessionsLoadingStatus());
     const qualities = useSelector(getQualities());
     const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
+    const currentUser = useSelector(getCurrentUserData());
     const { updateUser } = useAuth();
     const [errors, setErrors] = useState({});
     const history = useHistory();

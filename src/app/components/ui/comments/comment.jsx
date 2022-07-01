@@ -3,13 +3,12 @@ import PropTypes from "prop-types";
 
 // import api from "../../../api";
 import { formatDate } from "../../../utils/date";
-import { useAuth } from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
-import { getUserById } from "../../../store/users";
+import { getCurrentUserId, getUserById } from "../../../store/users";
 
 const Comment = ({ userId, content, createdAt, onDelete, _id }) => {
-    const { currentUser } = useAuth();
     const user = useSelector(getUserById(userId));
+    const currentUserId = useSelector(getCurrentUserId());
 
     const handleClick = () => {
         onDelete(_id);
@@ -35,7 +34,7 @@ const Comment = ({ userId, content, createdAt, onDelete, _id }) => {
                                     {formatDate(createdAt)}
                                 </span>
                             </p>
-                            {currentUser._id === userId && (
+                            {currentUserId === userId && (
                                 <button
                                     className="btn btn-sm text-primary d-flex align-items-center"
                                     onClick={handleClick}

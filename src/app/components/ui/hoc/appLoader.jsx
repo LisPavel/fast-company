@@ -18,7 +18,7 @@ const AppLoader = ({ children }) => {
         dispatch(loadQualitiesList());
         dispatch(loadProfessionsList());
         if (isLoggedIn) dispatch(loadUsersList());
-    }, []);
+    }, [isLoggedIn]);
 
     if (usersLoadingStatus) return "Loading";
     return children;

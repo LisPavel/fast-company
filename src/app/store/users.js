@@ -49,7 +49,7 @@ const usersSlice = createSlice({
             state.error = action.payload;
         },
         userCreated(state, action) {
-            state.entities?.push(action.payload);
+            if (state.entities) state.entities.push(action.payload);
         },
     },
 });
@@ -146,6 +146,9 @@ export const getDataStatus = () => (state) => {
 };
 export const getCurrentUserId = () => (state) => {
     return state.users.auth.userId;
+};
+export const getCurrentUserData = () => (state) => {
+    return state.users.entities?.find((u) => u._id === state.users.auth.userId);
 };
 
 export default usersReducer;

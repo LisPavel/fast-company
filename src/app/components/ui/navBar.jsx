@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
 import NavProfile from "./navProfile";
+import { useSelector } from "react-redux";
+import { getIsLoggedIn } from "../../store/users";
 
 const NavBar = ({ items }) => {
     const location = useLocation();
@@ -11,8 +12,8 @@ const NavBar = ({ items }) => {
         `nav-link${
             path === `/${location.pathname.split("/")[1]}` ? " active" : ""
         }`;
+    const isLoggedIn = useSelector(getIsLoggedIn());
 
-    const { currentUser } = useAuth();
     const renderItem = ({ path, data }) => {
         return (
             <li className="nav-item" key={path}>
@@ -32,8 +33,8 @@ const NavBar = ({ items }) => {
                     return renderItem({ path: item, data: current });
                 }
                 return current.onLoggedIn
-                    ? currentUser && renderItem({ path: item, data: current })
-                    : !currentUser && renderItem({ path: item, data: current });
+                    ? isLoggedIn && renderItem({ path: item, data: current })
+                    : !isLoggedIn && renderItem({ path: item, data: current });
             });
     }
     return (
@@ -41,7 +42,7 @@ const NavBar = ({ items }) => {
             <div className="container-fluid">
                 <ul className="nav">{renderItems()}</ul>
                 <div className="d-flex">
-                    {currentUser ? (
+                    {isLoggedIn ? (
                         <NavProfile />
                     ) : (
                         <Link className="nav-link" to="/login">

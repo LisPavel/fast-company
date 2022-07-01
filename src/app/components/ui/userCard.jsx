@@ -2,19 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import CardWrapper from "../common/CardWrapper";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { getProfessionById } from "../../store/professions";
+import { getCurrentUserId } from "../../store/users";
 
 const UserCard = ({ user }) => {
     const location = useLocation();
     const profession = useSelector(getProfessionById(user.profession));
-
-    const { currentUser } = useAuth();
+    const currentUserId = useSelector(getCurrentUserId());
 
     return (
         <CardWrapper className="mb-3">
-            {currentUser._id === user._id && (
+            {currentUserId === user._id && (
                 <Link
                     type="button"
                     className="position-absolute top-0 end-0 btn btn-light btn-sm"
