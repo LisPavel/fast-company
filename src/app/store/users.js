@@ -3,6 +3,7 @@ import { createAction, createSlice } from "@reduxjs/toolkit";
 import authService from "../services/authService";
 import localStorageService from "../services/localStorageService";
 import userService from "../services/userService";
+import { generateAuthError } from "../utils/errors";
 import history from "../utils/history";
 import { randomInt } from "../utils/number";
 
@@ -30,10 +31,10 @@ const usersSlice = createSlice({
     reducers: {
         usersRequested(state) {
             state.isLoading = true;
+            state.error = null;
         },
         usersReceived(state, action) {
             state.entities = action.payload;
-            state.error = null;
             state.isLoading = false;
             state.dataLoaded = true;
         },
@@ -66,6 +67,9 @@ const usersSlice = createSlice({
         userUpdateFailed(state, action) {
             state.error = action.payload;
         },
+        authRequested(state) {
+            state.error = null;
+        },
     },
 });
 
@@ -81,8 +85,10 @@ const {
     userLoggedOut,
     userUpdateFailed,
     userUpdated,
+    authRequested,
 } = actions;
-const authRequested = createAction("users/authRequested");
+
+// const authRequested = createAction("users/authRequested");
 const userCreateRequested = createAction("users/userCreateRequested");
 const userCreateFailed = createAction("users/userCreateFailed");
 const userUpdateRequested = createAction("users/userUpdateRequested");
@@ -113,7 +119,12 @@ export const logIn = ({ payload, redirect }) => {
             dispatch(authRequestSucceed({ userId: data.localId }));
             history.push(redirect);
         } catch (error) {
-            dispatch(authRequestFailed(error.message ?? error.error));
+            const { code, message } = error.response.data.error;
+            const errorMessage =
+                generateAuthError({ code, message }) ??
+                error.message ??
+                error.error;
+            dispatch(authRequestFailed(errorMessage));
         }
     };
 };
@@ -135,7 +146,12 @@ export const signUp = ({ email, password, ...rest }) => {
                 })
             );
         } catch (error) {
-            dispatch(authRequestFailed(error.message ?? error.error));
+            const { code, message } = error.response.data.error;
+            const errorMessage =
+                generateAuthError({ code, message }) ??
+                error.message ??
+                error.error;
+            dispatch(authRequestFailed(errorMessage));
         }
     };
 };
@@ -185,6 +201,9 @@ export const getCurrentUserId = () => (state) => {
 };
 export const getCurrentUserData = () => (state) => {
     return state.users.entities?.find((u) => u._id === state.users.auth.userId);
+};
+export const getAuthError = () => (state) => {
+    return state.users.error;
 };
 
 export default usersReducer;

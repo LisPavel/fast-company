@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { logIn } from "../../store/users.js";
+import { getAuthError, logIn } from "../../store/users.js";
 import { validator } from "../../utils/validator.js";
 import CheckBoxField from "../common/form/checkBoxField.jsx";
 import TextField from "../common/form/textField";
@@ -16,6 +16,7 @@ const LoginForm = () => {
     const history = useHistory();
 
     const dispatch = useDispatch();
+    const authError = useSelector(getAuthError());
 
     const handleChange = (data) => {
         if (!data) return;
@@ -23,7 +24,6 @@ const LoginForm = () => {
             ...prevState,
             [data.name]: data.value,
         }));
-        // setEmail(ev.target.value);
     };
 
     const validatorCfg = {
@@ -100,6 +100,7 @@ const LoginForm = () => {
                 >
                     Stay on
                 </CheckBoxField>
+                {authError && <p className="text-danger">{authError}</p>}
                 <button
                     className="btn btn-primary w-100 mx-auto"
                     disabled={!isValid}
