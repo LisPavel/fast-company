@@ -6,8 +6,7 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import { validator } from "../../../utils/validator";
-import { useAuth } from "../../../hooks/useAuth";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
     getQualities,
     getQualitiesLoadingStatus,
@@ -16,7 +15,7 @@ import {
     getProfessions,
     getProfessionsLoadingStatus,
 } from "../../../store/professions";
-import { getCurrentUserData } from "../../../store/users";
+import { getCurrentUserData, updateUser } from "../../../store/users";
 
 const UserEditPage = () => {
     const [isLoading, setLoading] = useState(true);
@@ -27,9 +26,9 @@ const UserEditPage = () => {
     const qualities = useSelector(getQualities());
     const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const currentUser = useSelector(getCurrentUserData());
-    const { updateUser } = useAuth();
     const [errors, setErrors] = useState({});
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const qualitiesOptions = qualities.map(toUiData);
     const professionOptions = professions.map(toUiData);
@@ -99,7 +98,7 @@ const UserEditPage = () => {
 
     useEffect(() => data && validate(), [data]);
 
-    const handleSubmit = async (ev) => {
+    const handleSubmit = (ev) => {
         ev.preventDefault();
         const isValid = validate();
         if (!isValid) return;
@@ -107,8 +106,7 @@ const UserEditPage = () => {
             ...data,
             qualities: data.qualities.map(({ value }) => value),
         };
-        await updateUser(newData);
-        history.push(`/users/${currentUser._id}`);
+        dispatch(updateUser(newData));
     };
 
     if (isLoading) return <h3> Loading... </h3>;
