@@ -2,32 +2,40 @@ import React, { useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
-// import { useComments } from "../../../hooks/useComments";
 import {
+    createComment,
     getComments,
     getCommentsLoadingStatus,
     loadCommentsList,
+    removeComment,
 } from "../../../store/comments";
 import CommentsList from "./commentsList";
 import NewCommentForm from "./newCommentForm";
 import { useParams } from "react-router-dom";
+import { getCurrentUserId } from "../../../store/users";
+import { nanoid } from "nanoid";
 
 const Comments = () => {
     const { id: userId } = useParams();
-    // const { comments, createComment, removeComment } = useComments();
+    const currentUserId = useSelector(getCurrentUserId());
     const dispatch = useDispatch();
     useEffect(() => dispatch(loadCommentsList(userId)), [userId]);
     const commentsLoading = useSelector(getCommentsLoadingStatus());
     const comments = useSelector(getComments());
 
     const handleDelete = useCallback((commentId) => {
-        console.log(commentId);
-        // removeComment(commentId);
+        dispatch(removeComment(commentId));
     }, []);
 
-    const handleAddComment = useCallback((newComment) => {
-        console.log(newComment);
-        // createComment(newComment);
+    const handleAddComment = useCallback((newCommentData) => {
+        const newComment = {
+            ...newCommentData,
+            pageId: userId,
+            created_at: Date.now(),
+            userId: currentUserId,
+            _id: nanoid(),
+        };
+        dispatch(createComment(newComment));
     }, []);
 
     return (
