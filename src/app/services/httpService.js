@@ -9,21 +9,24 @@ const http = axios.create({ baseURL: configFile.apiEndPoint });
 
 http.interceptors.request.use(
     async (config) => {
+        const expiresDate = localStorageService.getExpiresDate();
+        const refreshToken = localStorageService.getRefreshToken();
+        const isExpired = refreshToken && expiresDate < Date.now();
+
         if (configFile.isFireBase) {
             const isSlashEnd = /\/$/gi.test(config.url);
             config.url = `${
                 isSlashEnd ? config.url.slice(0, -1) : config.url
             }.json`;
-            const expiresDate = localStorageService.getExpiresDate();
-            const refreshToken = localStorageService.getRefreshToken();
-            if (refreshToken && expiresDate < Date.now()) {
+
+            if (isExpired) {
                 try {
                     const data = await authService.refreshToken();
-                    console.log("refresh", data);
+                    // console.log("refresh", data);
                     localStorageService.setTokens({
                         refreshToken: data.refresh_token,
-                        idToken: data.id_token,
-                        localId: data.user_id,
+                        accessToken: data.id_token,
+                        userId: data.user_id,
                         expiresIn: data.expiresIn,
                     });
                 } catch (error) {
@@ -35,6 +38,25 @@ http.interceptors.request.use(
 
             if (accessToken) {
                 config.params = { ...config.params, auth: accessToken };
+            }
+        } else {
+            if (isExpired) {
+                try {
+                    const data = await authService.refreshToken();
+                    console.log("refresh", data);
+                    localStorageService.setTokens(data);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            const accessToken = localStorageService.getAccessToken();
+
+            if (accessToken) {
+                config.params = {
+                    ...config.params,
+                    Authorization: `Bearer ${accessToken}`,
+                };
             }
         }
         return config;
@@ -50,6 +72,8 @@ http.interceptors.response.use(
     (res) => {
         if (configFile.isFireBase) {
             res.data = { content: transformData(res.data) };
+        } else {
+            res.data = { content: res.data };
         }
         return res;
     },
