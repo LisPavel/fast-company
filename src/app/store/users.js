@@ -5,7 +5,6 @@ import localStorageService from "../services/localStorageService";
 import userService from "../services/userService";
 import { generateAuthError } from "../utils/errors";
 import history from "../utils/history";
-import { randomInt } from "../utils/number";
 
 const initialState = localStorageService.getAccessToken()
     ? {
@@ -81,7 +80,6 @@ const {
     usersRequested,
     authRequestSucceed,
     authRequestFailed,
-    userCreated,
     userLoggedOut,
     userUpdateFailed,
     userUpdated,
@@ -89,8 +87,6 @@ const {
 } = actions;
 
 // const authRequested = createAction("users/authRequested");
-const userCreateRequested = createAction("users/userCreateRequested");
-const userCreateFailed = createAction("users/userCreateFailed");
 const userUpdateRequested = createAction("users/userUpdateRequested");
 
 export const loadUsersList = () => async (dispatch) => {
@@ -129,22 +125,14 @@ export const logIn = ({ payload, redirect }) => {
     };
 };
 
-export const signUp = ({ email, password, ...rest }) => {
+export const signUp = (payload) => {
     return async (dispatch) => {
         dispatch(authRequested());
         try {
-            const data = await authService.register({ email, password });
+            const data = await authService.register(payload);
             localStorageService.setTokens(data);
-            dispatch(authRequestSucceed({ userId: data.localId }));
-            dispatch(
-                createUser({
-                    ...rest,
-                    email,
-                    _id: data.localId,
-                    rate: randomInt(1, 5),
-                    completedMeetings: randomInt(0, 200),
-                })
-            );
+            dispatch(authRequestSucceed(data));
+            history.push(`/users/${data.userId}`);
         } catch (error) {
             const { code, message } = error.response.data.error;
             const errorMessage =
@@ -155,19 +143,6 @@ export const signUp = ({ email, password, ...rest }) => {
         }
     };
 };
-
-function createUser(payload) {
-    return async (dispatch) => {
-        dispatch(userCreateRequested());
-        try {
-            const { content } = await userService.create(payload);
-            dispatch(userCreated(content));
-            history.push("/users");
-        } catch (error) {
-            dispatch(userCreateFailed(error.message ?? error.error));
-        }
-    };
-}
 
 export const updateUser = (data) => async (dispatch) => {
     dispatch(userUpdateRequested());
