@@ -13,7 +13,6 @@ import CommentsList from "./commentsList";
 import NewCommentForm from "./newCommentForm";
 import { useParams } from "react-router-dom";
 import { getCurrentUserId } from "../../../store/users";
-import { nanoid } from "nanoid";
 
 const Comments = () => {
     const { id: userId } = useParams();
@@ -33,7 +32,6 @@ const Comments = () => {
             pageId: userId,
             created_at: Date.now(),
             userId: currentUserId,
-            _id: nanoid(),
         };
         dispatch(createComment(newComment));
     }, []);
