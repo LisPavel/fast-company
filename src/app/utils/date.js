@@ -24,7 +24,7 @@ const convertToUnit = (value, unit) => {
  */
 const formatDate = (dateStr) => {
     const today = new Date();
-    const date = new Date(parseInt(dateStr));
+    const date = new Date(dateStr);
     const diff = today - date;
 
     const diffInSec = convertToUnit(diff, "s");
